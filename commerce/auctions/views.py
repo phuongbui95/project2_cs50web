@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -63,30 +63,29 @@ def register(request):
         return render(request, "auctions/register.html")
 
 def create(request):
-    if request.method == "POST":
-        title = request.POST["title"]
-        description = request.POST["description"]
-        starting_bid = request.POST["starting_bid"]
-        img_url = request.POST["img_url"]
+    return render(request,"auctions/create.html")
+    # if request.method == "POST":
+    #     title = request.POST["title"]
+    #     description = request.POST["description"]
+    #     starting_bid = request.POST["starting_bid"]
+    #     img_url = request.POST["img_url"]
 
-        return HttpResponseRedirect(reverse("active"))
-        # return render(request, "auctions/active.html", {
-        #     "title": title,
-        #     "description": description,
-        #     "starting_bid": starting_bid,
-        #     "img_url": img_url,
-        # })
-    else:
-        return render(request, "auctions/create.html")
-    
-def active(request):
-    return render(request, "auctions/active.html", {
-            "title": title,
-            "description": description,
-            "starting_bid": starting_bid,
-            "img_url": img_url,
-        })
+    #     return HttpResponseRedirect(reverse("index"))
+    # else:
+    #     return render(request, "auctions/create.html")
 
-def listing(request):
-    pass
+def listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing,
+        "prices": listing.titles.all(),
+        "non_titles": Passenger.objects.exclude(flights=flight).all()
+    })
+    return render(request,"auctions/listing.html")
+
+def watchlist(request):
+    return render(request,"auctions/watchlist.html")
+
+def categories(request):
+    return render(request,"auctions/categories.html")
 
