@@ -7,6 +7,7 @@ class User(AbstractUser):
     # def __str__(self):
     #     return f"{self.id}: {self.username} ({self.email})"
     pass
+    
 
 class Category(models.Model):
     CATEGORY_LIST = models.TextChoices('CATEGORY_LIST', 
@@ -34,6 +35,7 @@ class Listing(models.Model):
     )
     user_type = models.IntegerField(max_length=1, choices=USER_TYPE)
 
+    # image = models.ImageField()
     # def __str__(self):
     #     return f"{self.id}: {self.title} /n {self.description}"
     
