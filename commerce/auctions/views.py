@@ -79,7 +79,7 @@ def listing(request, listing_id):
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "prices": listing.titles.all(),
-        "non_titles": Passenger.objects.exclude(flights=flight).all()
+        "non_titles": User.objects.exclude(users=user).all()
     })
     return render(request,"auctions/listing.html")
 
