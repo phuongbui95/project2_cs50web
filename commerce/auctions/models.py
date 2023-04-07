@@ -26,16 +26,16 @@ class Listing(models.Model):
         (0, 'active'),
         (1, 'closed'),
     )
-    listing_status = models.IntegerField(max_length=1, choices=LISTING_STATUS)
+    listing_status = models.IntegerField(choices=LISTING_STATUS)
 
     USER_TYPE = (
         (0, 'none'),
         (1, 'creator'),
         (2, 'bidder'),
     )
-    user_type = models.IntegerField(max_length=1, choices=USER_TYPE)
+    user_type = models.IntegerField(choices=USER_TYPE)
 
-    # image = models.ImageField()
+    image = models.ImageField(blank=True, upload_to="auctions/static/auctions/media") 
     # def __str__(self):
     #     return f"{self.id}: {self.title} /n {self.description}"
     
@@ -49,7 +49,7 @@ class Bid(models.Model):
         (1, 'chosen'),
         (2, 'archived'),
     )
-    bid_status = models.IntegerField(max_length=1, choices=BID_STATUS)
+    bid_status = models.IntegerField(choices=BID_STATUS)
     
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -60,5 +60,5 @@ class Comment(models.Model):
         (0, 'live'),
         (1, 'deleted'),
     )
-    comment_status = models.IntegerField(max_length=1, choices=COMMENT_STATUS)
+    comment_status = models.IntegerField(choices=COMMENT_STATUS)
 

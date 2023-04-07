@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from .models import User, Category, Listing, Bid, Comment
 
 # Register your models here.
@@ -10,7 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "title", "description", "listing_status", "user_type")
+    list_display = ("id", "user", "category", "title", "description", "listing_status", "user_type","image")
 
 class BidAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "category", "listing", "price", "bid_status")
