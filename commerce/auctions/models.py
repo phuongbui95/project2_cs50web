@@ -35,7 +35,7 @@ class Listing(models.Model):
     )
     user_type = models.IntegerField(choices=USER_TYPE)
 
-    image = models.ImageField(blank=True, upload_to="auctions/static/auctions/media") 
+    image = models.ImageField(blank=True, upload_to="auctions/static/auctions/images") 
     # def __str__(self):
     #     return f"{self.id}: {self.title} /n {self.description}"
     

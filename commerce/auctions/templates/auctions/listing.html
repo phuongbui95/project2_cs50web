@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Current Listing</h2>
+    <ul>
+        <li>Listing id: {{ listing }}</li>
+        <li>Title: {{ listing.title }}</li>
+        <li>Description: {{ listing.description }}</li>
+        <li>Image: {{ listing.image }}</li>
+        <img src="{{ listing.image }}" style="max-width: 200px;">
+
+    </ul>
+{% endblock %}

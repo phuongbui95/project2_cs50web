@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing, Comment, Category, Bid
 
 
 def index(request):
@@ -76,12 +77,16 @@ def create(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "prices": listing.titles.all(),
-        "non_titles": User.objects.exclude(users=user).all()
-    })
-    return render(request,"auctions/listing.html")
+    if listing is not None:
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            # "title": listing.title,
+            # "description": listing.description,
+            # "image": listing.image,
+            # "non_bidders": User.objects.exclude(users=user).all()
+        })
+    else:
+        raise Http404("Listing does not exist")
 
 def watchlist(request):
     return render(request,"auctions/watchlist.html")
