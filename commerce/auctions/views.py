@@ -8,9 +8,12 @@ from django.urls import reverse
 from .models import User, Listing, Comment, Category, Bid
 from .forms import CreateListingForm
 
-
+# get the data from Listing model
 def index(request):
-    return render(request, "auctions/index.html")
+    all_listing = Listing.objects.all()
+    return render(request, "auctions/index.html", {
+        "all_listing": all_listing
+    })
 
 
 def login_view(request):
@@ -67,10 +70,18 @@ def register(request):
 def create(request):
     if request.POST:
         form = CreateListingForm(request.POST, request.FILES)
-        print(request.FILES)
+        # print(request.FILES)
+        # check if form data is valid (server-side)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse("index"))   
+            # Redirect user to active listing
+            return HttpResponseRedirect(reverse("index"))   
+        else:
+            # If the form is invalid, re-render the page with existing information.
+            render(request,"auctions/create.html", {
+                'form': form
+            })
+
     return render(request,"auctions/create.html", {
         'form': CreateListingForm()
     })
