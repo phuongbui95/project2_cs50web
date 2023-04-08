@@ -2,10 +2,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import User, Listing, Comment, Category, Bid
+from .forms import CreateListingForm
 
 
 def index(request):
@@ -64,26 +65,22 @@ def register(request):
         return render(request, "auctions/register.html")
 
 def create(request):
-    return render(request,"auctions/create.html")
-    # if request.method == "POST":
-    #     title = request.POST["title"]
-    #     description = request.POST["description"]
-    #     starting_bid = request.POST["starting_bid"]
-    #     img_url = request.POST["img_url"]
-
-    #     return HttpResponseRedirect(reverse("index"))
-    # else:
-    #     return render(request, "auctions/create.html")
+    if request.POST:
+        form = CreateListingForm(request.POST, request.FILES)
+        print(request.FILES)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse("index"))   
+    return render(request,"auctions/create.html", {
+        'form': CreateListingForm
+    })
+    
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     if listing is not None:
         return render(request, "auctions/listing.html", {
             "listing": listing,
-            # "title": listing.title,
-            # "description": listing.description,
-            # "image": listing.image,
-            # "non_bidders": User.objects.exclude(users=user).all()
         })
     else:
         raise Http404("Listing does not exist")

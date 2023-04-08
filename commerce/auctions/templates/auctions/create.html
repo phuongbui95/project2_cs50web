@@ -2,6 +2,10 @@
 
 {% block body %}
     <h2>Create Listing</h2>
-
-    TODO
+    <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button>Submit</button>
+    </form>
+    
 {% endblock %}
