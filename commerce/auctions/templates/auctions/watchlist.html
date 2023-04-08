@@ -2,6 +2,10 @@
 
 {% block body %}
     <h2>Watchlist</h2>
-
-    TODO
+    <ul>
+        {% for url in url_list %}
+            <li><a href="{{ url }}">{{ url }}</a></li>
+        {% endfor %}
+    </ul>
+    
 {% endblock %}

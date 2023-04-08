@@ -8,6 +8,11 @@
         <li>Description: {{ listing.description }}</li>
         <li>Image: {{ listing.image }}</li>
         <img src="{{ listing.image }}" style="max-width: 200px;">
-
     </ul>
+    
+    <form method="post" action="{% url 'watchlist' %}">
+        {% csrf_token %}
+        <input type="hidden" name="url" value="{{ request.build_absolute_uri }}">
+        <button type="submit">Add to watchlist</button>
+    </form>
 {% endblock %}

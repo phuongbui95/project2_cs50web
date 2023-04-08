@@ -1,7 +1,16 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Categories</h2>
-
-    TODO
+    <h2>Category: {{ category.name }}</h2>
+    <div>
+        {% for listing in all_listing %}
+            <ul>
+                <li>Listing id: {{ listing.id}} </li>
+                <li>Title: {{ listing.title }} </li>
+                <li>Description: {{ listing.description }} </li>
+                <li>Current price: {{ listing.bid_price }} </li>
+                <li>Image: {{ listing.image }} </li>
+            </ul>
+        {% endfor %}
+    </div>
 {% endblock %}

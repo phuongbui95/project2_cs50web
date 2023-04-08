@@ -10,7 +10,7 @@ from .forms import CreateListingForm
 
 # get the data from Listing model
 def index(request):
-    all_listing = Listing.objects.all()
+    all_listing = Listing.objects.all()[::-1]
     return render(request, "auctions/index.html", {
         "all_listing": all_listing
     })
@@ -96,9 +96,20 @@ def listing(request, listing_id):
     else:
         raise Http404("Listing does not exist")
 
+# create a url_list of particular user
+url_list=[]
 def watchlist(request):
-    return render(request,"auctions/watchlist.html")
+    if request.method == 'POST':
+        # Save url to database
+        url = request.POST.get('url')
+        url_list.append(url)
+
+    return render(request,"auctions/watchlist.html", {
+        "url_list": url_list
+    })
 
 def categories(request):
+    category = Category.objects.all()
+    
     return render(request,"auctions/categories.html")
 
