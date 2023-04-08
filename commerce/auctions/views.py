@@ -72,7 +72,7 @@ def create(request):
             form.save()
         return HttpResponseRedirect(reverse("index"))   
     return render(request,"auctions/create.html", {
-        'form': CreateListingForm
+        'form': CreateListingForm()
     })
     
 

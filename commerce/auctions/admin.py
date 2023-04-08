@@ -9,7 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "title", "description", "listing_status", "user_type","image")
+    list_display = ("id", "title", "description", "bid_price","image")
 
 class BidAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "category", "listing", "price", "bid_status")

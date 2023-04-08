@@ -12,32 +12,31 @@ class User(AbstractUser):
 class Category(models.Model):
     CATEGORY_LIST = models.TextChoices('CATEGORY_LIST', 
                                        'Electronics Toys Home Fashion')
-    name = models.CharField(blank=True, choices=CATEGORY_LIST.choices, max_length=64)
+    name = models.CharField(default=True, choices=CATEGORY_LIST.choices, max_length=64)
     # def __str__(self):
     #     return f"{self.id}: {self.name}"
 
 class Listing(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    
-    LISTING_STATUS = (
-        (0, 'active'),
-        (1, 'closed'),
-    )
-    listing_status = models.IntegerField(choices=LISTING_STATUS)
-
-    USER_TYPE = (
-        (0, 'none'),
-        (1, 'creator'),
-        (2, 'bidder'),
-    )
-    user_type = models.IntegerField(choices=USER_TYPE)
-
+    bid_price = models.BigIntegerField(default=0)
     image = models.ImageField(blank=True, upload_to="auctions/static/auctions/images") 
-    # def __str__(self):
-    #     return f"{self.id}: {self.title} /n {self.description}"
+
+    # LISTING_STATUS = (
+    #     (0, 'active'),
+    #     (1, 'closed'),
+    # )
+    # listing_status = models.IntegerField(null=True, choices=LISTING_STATUS)
+
+    # USER_TYPE = (
+    #     (0, 'none'),
+    #     (1, 'creator'),
+    #     (2, 'bidder'),
+    # )
+    # user_type = models.IntegerField(null=True, choices=USER_TYPE)
+    
     
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
