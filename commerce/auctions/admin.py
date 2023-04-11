@@ -6,10 +6,10 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ("id", "username") #temporary display
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("id", "category_name")
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "description", "bid_price","image")
+    list_display = ("id", "category", "title", "description", "bid_price","image")
 
 class BidAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "category", "listing", "price", "bid_status")

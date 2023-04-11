@@ -7,18 +7,20 @@ class User(AbstractUser):
     # def __str__(self):
     #     return f"{self.id}: {self.username} ({self.email})"
     pass
-    
 
 class Category(models.Model):
-    CATEGORY_LIST = models.TextChoices('CATEGORY_LIST', 
-                                       'Electronics Toys Home Fashion')
-    name = models.CharField(default=True, choices=CATEGORY_LIST.choices, max_length=64)
-    # def __str__(self):
-    #     return f"{self.id}: {self.name}"
+    CATEGORY_LIST = (
+        ("El", "Electrononics"),    
+        ("Ho", "Home"),
+        ("To", "Toys"),
+        ("Fa", "Fashion"),
+    )
+                                       
+    category_name = models.CharField(max_length=64, choices=CATEGORY_LIST, default=None)
 
 class Listing(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     bid_price = models.BigIntegerField(default=0)
@@ -37,7 +39,7 @@ class Listing(models.Model):
     # )
     # user_type = models.IntegerField(null=True, choices=USER_TYPE)
     
-    
+
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

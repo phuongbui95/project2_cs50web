@@ -108,8 +108,9 @@ def watchlist(request):
         "url_list": url_list
     })
 
-def categories(request):
+def category(request):
     category = Category.objects.all()
-    
-    return render(request,"auctions/categories.html")
+    return render(request,"auctions/category.html", {
+        "category": category
+    })
 
