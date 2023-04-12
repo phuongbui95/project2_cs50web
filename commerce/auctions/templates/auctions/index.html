@@ -10,7 +10,7 @@
                 <li>Title: {{ listing.title }} </li>
                 <li>Description: {{ listing.description }} </li>
                 <li>Current price: {{ listing.bid_price }} </li>
-                <li>Image: {{ listing.image }} </li>
+                <li>Image: <img src="{{ listing.image }}" style="max-width: 200px;"></li>
             </ul>
         {% endfor %}
     </div>

@@ -6,8 +6,8 @@
         <li>Listing id: {{ listing }}</li>
         <li>Title: {{ listing.title }}</li>
         <li>Description: {{ listing.description }}</li>
-        <li>Image: {{ listing.image }}</li>
-        <img src="{{ listing.image }}" style="max-width: 200px;">
+        <li>Image: <img src="{{ listing.image }}" style="max-width: 200px;"></li>
+        
     </ul>
     
     <form method="post" action="{% url 'watchlist' %}">

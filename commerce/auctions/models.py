@@ -7,6 +7,7 @@ class User(AbstractUser):
     pass
 
 class Category(models.Model):
+    id = models.AutoField(primary_key=True)
     CATEGORY_LIST = (
         ("Electronics", "Electronics"),    
         ("Home", "Home"),
@@ -20,11 +21,11 @@ class Category(models.Model):
     def __str__(self):
         return self.category_name #display the 1st elements of each tuple
 
-default_category = Category.objects.get(category_name="Other")
 class Listing(models.Model):
+    id = models.AutoField(primary_key=True)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # set foreign key by instance not id: default_category = Category.objects.get(category_name="Other")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listing_category", default=default_category)
+    # key id could be nullable: null=True
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name="listing_category")
     title = models.CharField(max_length=100)
     description = models.TextField()
     bid_price = models.BigIntegerField(default=0)
@@ -45,6 +46,7 @@ class Listing(models.Model):
     
 
 class Bid(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
@@ -57,6 +59,7 @@ class Bid(models.Model):
     bid_status = models.IntegerField(choices=BID_STATUS)
     
 class Comment(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
