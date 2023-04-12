@@ -3,13 +3,13 @@ from .models import User, Category, Listing, Bid, Comment
 
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "username") #temporary display
+    list_display = ("id", "username")
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "category_name")
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "category", "title", "description", "bid_price","image")
+    list_display = ("id", "category", "title", "description", "bid_price", "image")
 
 class BidAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "category", "listing", "price", "bid_status")

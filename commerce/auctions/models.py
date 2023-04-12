@@ -4,23 +4,27 @@ from django.db import models
 # Tutorial: https://docs.djangoproject.com/en/4.1/topics/db/models/
 class User(AbstractUser):
     #already have fields for a username, email, password, etc., 
-    # def __str__(self):
-    #     return f"{self.id}: {self.username} ({self.email})"
     pass
 
 class Category(models.Model):
     CATEGORY_LIST = (
-        ("El", "Electrononics"),    
-        ("Ho", "Home"),
-        ("To", "Toys"),
-        ("Fa", "Fashion"),
+        ("Electronics", "Electronics"),    
+        ("Home", "Home"),
+        ("Toys", "Toys"),
+        ("Fashion", "Fashion"),
+        ("Other", "Other"),
     )
                                        
-    category_name = models.CharField(max_length=64, choices=CATEGORY_LIST, default=None)
+    category_name = models.CharField(max_length=64, choices=CATEGORY_LIST, default="Other")
+    # display the key as category_name but id
+    def __str__(self):
+        return self.category_name #display the 1st elements of each tuple
 
+default_category = Category.objects.get(category_name="Other")
 class Listing(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    # set foreign key by instance not id: default_category = Category.objects.get(category_name="Other")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listing_category", default=default_category)
     title = models.CharField(max_length=100)
     description = models.TextField()
     bid_price = models.BigIntegerField(default=0)
