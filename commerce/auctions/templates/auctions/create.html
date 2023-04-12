@@ -2,7 +2,8 @@
 
 {% block body %}
     <h2>Create Listing</h2>
-    <form method="post" action="{% url 'create' %}">
+    <!-- enctype="multipart/form-data": The enctype attribute specifies how the form-data should be encoded when submitting it to the server. -->
+    <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Save">

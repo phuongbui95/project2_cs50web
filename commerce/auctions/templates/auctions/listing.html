@@ -6,7 +6,8 @@
         <li>Listing id: {{ listing }}</li>
         <li>Title: {{ listing.title }}</li>
         <li>Description: {{ listing.description }}</li>
-        <li>Image: <img src="{{ listing.image }}" style="max-width: 200px;"></li>
+        <!-- remember to add ".url" to link to the image -->
+        <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
         
     </ul>
     

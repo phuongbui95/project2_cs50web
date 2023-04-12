@@ -91,7 +91,7 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     if listing is not None:
         return render(request, "auctions/listing.html", {
-            "listing": listing,
+            "listing": listing
         })
     else:
         raise Http404("Listing does not exist")
