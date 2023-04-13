@@ -3,9 +3,9 @@
 {% block body %}
     <h2>Watchlist</h2>
     <ul>
-        {% for url in url_list %}
-            <li><a href="{{ url }}">{{ url }}</a></li>
-        {% endfor %}
+        <li><a href="{{ url 'listing' watchlist.listing }}">{{ watchlist.listing }}</a></li>
+        
     </ul>
+    <button>Remove</button>
     
 {% endblock %}

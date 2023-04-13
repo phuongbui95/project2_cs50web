@@ -3,11 +3,13 @@
 {% block body %}
     <h2>Current Listing</h2>
     <ul>
-        <li>Listing id: {{ listing }}</li>
+        <li>Listing id: {{ listing.id }}</li>
         <li>Title: {{ listing.title }}</li>
         <li>Description: {{ listing.description }}</li>
-        <!-- remember to add ".url" to link to the image -->
-        <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
+        {% if listing.image.url != None %}
+            <!-- remember to add ".url" to link to the image -->
+            <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
+        {% endif %}
         
     </ul>
     
@@ -16,4 +18,10 @@
         <input type="hidden" name="url" value="{{ request.build_absolute_uri }}">
         <button type="submit">Add to watchlist</button>
     </form>
+
 {% endblock %}
+
+<!-- <div>
+        <button><a href="{% url 'bid' listing.id %}">Bid</a></button>
+        <button><a href="{% url 'comment' listing.id %}">Bid</a></button>
+    </div> -->

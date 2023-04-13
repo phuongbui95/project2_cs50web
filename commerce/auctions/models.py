@@ -4,8 +4,10 @@ from django.db import models
 # Tutorial: https://docs.djangoproject.com/en/4.1/topics/db/models/
 class User(AbstractUser):
     #already have fields for a username, email, password, etc., 
-    pass
-
+    # pass
+    def __str__(self):
+        return self.username #present username as key instead of id
+    
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     CATEGORY_LIST = (
@@ -43,11 +45,25 @@ class Listing(models.Model):
     #     (2, 'bidder'),
     # )
     # user_type = models.IntegerField(null=True, choices=USER_TYPE)
+
+    # display the key as title but id
+    def __str__(self):
+        return self.title
     
+class Watchlist(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    
+    WATCHLIST_STATUS = (
+        (0, 'added'),
+        (1, 'removed'),
+    )
+    status = models.IntegerField(choices=WATCHLIST_STATUS, default=0)
 
 class Bid(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     price = models.BigIntegerField()
@@ -56,11 +72,11 @@ class Bid(models.Model):
         (1, 'chosen'),
         (2, 'archived'),
     )
-    bid_status = models.IntegerField(choices=BID_STATUS)
+    status = models.IntegerField(choices=BID_STATUS, default=0)
     
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     content = models.TextField()
@@ -68,5 +84,5 @@ class Comment(models.Model):
         (0, 'live'),
         (1, 'deleted'),
     )
-    comment_status = models.IntegerField(choices=COMMENT_STATUS)
+    status = models.IntegerField(choices=COMMENT_STATUS, default=0)
 

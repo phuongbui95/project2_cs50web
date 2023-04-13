@@ -4,8 +4,9 @@ from django.http import HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Comment, Category, Bid
+from .models import User, Listing, Comment, Category, Bid, Watchlist
 from .forms import CreateListingForm
 
 # get the data from Listing model
@@ -67,6 +68,22 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+def category(request):
+    category = Category.objects.all()
+    return render(request,"auctions/category.html", {
+        "category": category
+    })
+
+def listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    if listing is not None:
+        return render(request, "auctions/listing.html", {
+            "listing": listing
+        })
+    else:
+        raise Http404("Listing does not exist")
+
+@login_required
 def create(request):
     if request.POST:
         form = CreateListingForm(request.POST, request.FILES)
@@ -86,31 +103,39 @@ def create(request):
         'form': CreateListingForm()
     })
     
-
-def listing(request, listing_id):
-    listing = Listing.objects.get(pk=listing_id)
-    if listing is not None:
-        return render(request, "auctions/listing.html", {
-            "listing": listing
-        })
-    else:
-        raise Http404("Listing does not exist")
-
-# create a url_list of particular user
-url_list=[]
+# @login_required
 def watchlist(request):
+    # create a url_list of particular user
+    id_list=[]
     if request.method == 'POST':
         # Save url to database
-        url = request.POST.get('url')
-        url_list.append(url)
+        listing_id = request.POST.get('listing_id')
+        id_list.append(listing_id)
 
-    return render(request,"auctions/watchlist.html", {
-        "url_list": url_list
+    user = User.objects.get(pk=user.id)
+    watchlist = Watchlist.objects.filter(user=request.user)
+    return render(request, 'auctions/watchlist.html', {
+        'watchlist': watchlist,
     })
 
-def category(request):
-    category = Category.objects.all()
-    return render(request,"auctions/category.html", {
-        "category": category
-    })
+# @login_required
+# def bid(request):
+#     if request.method == "POST":
+#         listing_id = request.POST
+#         listing = Listing.objects.get(pk=listing_id)
+#         user = User.objects.get(pk=user_id)
+#         bid = Bid.objects.get(pk=bid_id)
+#         return render(request, "auctions/bid.html", {
+#             "listing": listing,
+#             "user": user,
+#             "bid": bid
+#         })
+#     else:
+#         return render(request, "auctions/bid.htm", {
+#             "message": "Please input an existing listing id."
+#         })
+    
 
+# @login_required
+# def comment(request):
+#     return render(request, "auctions/comment.html")
