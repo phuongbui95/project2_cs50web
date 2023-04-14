@@ -2,10 +2,18 @@
 
 {% block body %}
     <h2>Watchlist</h2>
-    <ul>
-        <li><a href="{{ url 'listing' watchlist.listing }}">{{ watchlist.listing }}</a></li>
-        
-    </ul>
-    <button>Remove</button>
+    <div>
+        {% for item in all_items %}
+            <a href="{% url 'listing' item.listing.id %}">
+                <ul>
+                    <li>Lisiting id: {{ item.listing.id }}</li>
+                    <li>Title: {{ item.listing.title }}</li>
+                    <li>Watchlist status: {{ item.status }} </li>
+                </ul>
+                
+            </a>
+            <button>Remove</button>
+        {% endfor %}
+    </div>
     
 {% endblock %}

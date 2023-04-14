@@ -45,10 +45,6 @@ class Listing(models.Model):
     #     (2, 'bidder'),
     # )
     # user_type = models.IntegerField(null=True, choices=USER_TYPE)
-
-    # display the key as title but id
-    def __str__(self):
-        return self.title
     
 class Watchlist(models.Model):
     id = models.AutoField(primary_key=True)

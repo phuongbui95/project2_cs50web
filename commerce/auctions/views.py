@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Comment, Category, Bid, Watchlist
+from .models import User, Listing, Comment, Category, Bid , Watchlist
 from .forms import CreateListingForm
 
 # get the data from Listing model
@@ -83,7 +83,7 @@ def listing(request, listing_id):
     else:
         raise Http404("Listing does not exist")
 
-@login_required
+# @login_required
 def create(request):
     if request.POST:
         form = CreateListingForm(request.POST, request.FILES)
@@ -103,19 +103,15 @@ def create(request):
         'form': CreateListingForm()
     })
     
-# @login_required
+@login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def watchlist(request):
-    # create a url_list of particular user
-    id_list=[]
-    if request.method == 'POST':
-        # Save url to database
-        listing_id = request.POST.get('listing_id')
-        id_list.append(listing_id)
+    added_item = Listing.objects.get(pk=request.POST["listing_id"])
+    watchlist_item = Watchlist(user=request.user, listing=added_item)
+    watchlist_item.save() #save to database's model
 
-    user = User.objects.get(pk=user.id)
-    watchlist = Watchlist.objects.filter(user=request.user)
+    all_items = Watchlist.objects.all()[::-1]
     return render(request, 'auctions/watchlist.html', {
-        'watchlist': watchlist,
+        'all_items': all_items
     })
 
 # @login_required
