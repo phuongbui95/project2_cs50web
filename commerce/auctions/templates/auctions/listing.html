@@ -6,6 +6,7 @@
         <li>Listing id: {{ listing.id }}</li>
         <li>Title: {{ listing.title }}</li>
         <li>Description: {{ listing.description }}</li>
+        <li><b>Current Bid ($): {{ listing.bid_price }}</b></li>
         {% if listing.image.url != None %}
             <!-- remember to add ".url" to link to the image -->
             <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
@@ -15,12 +16,23 @@
     
     <form method="post" action="{% url 'watchlist' %}">
         {% csrf_token %}
-        <!-- <input type="hidden" name="url" value="{{ request.build_absolute_uri }}"> -->
+        <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
         <input type="hidden" name="listing_id" value="{{ listing.id }}">
-        <button type="submit">Add to watchlist</button>
+        <button type="submit" name="add_button">Add to watchlist</button>
     </form>
 
+    <form method="post" action="{% url 'bid' %}">
+        {% csrf_token %}
+        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+        <button type="submit" name="start_bid">Bid Me!</button>
+    </form>
 {% endblock %}
+
+<!-- <form method="post" action="{% url 'close_auction' %}">
+    {% csrf_token %}
+    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+    <button type="submit" name="close_auction">Close this listing</button>
+</form> -->
 
 <!-- <div>
         <button><a href="{% url 'bid' listing.id %}">Bid</a></button>

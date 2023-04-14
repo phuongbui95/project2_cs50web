@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
-from django.http import Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -105,33 +104,95 @@ def create(request):
     
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def watchlist(request):
-    added_item = Listing.objects.get(pk=request.POST["listing_id"])
-    watchlist_item = Watchlist(user=request.user, listing=added_item)
-    watchlist_item.save() #save to database's model
+    # Add to Watchlist
+    if request.method == "POST":
+        if "add_button" in request.POST:
+            # scrap listing's id after hitting the "Add to Watchlist" button 
+            listing_id_posted = Listing.objects.get(pk=request.POST["listing_id"])
+            # create new Watchlist object
+            if Watchlist.objects.filter(user=request.user, listing=listing_id_posted).exists():
+                return HttpResponse('Listing already exists')
+            else:
+                # Create a new object in Model
+                watchlist_item = Watchlist(user=request.user, listing=listing_id_posted)
+                watchlist_item.save() #save to database's model
+        elif "remove_button" in request.POST:
+            item_listing_id_selected = request.POST['item_listing_id']
+            # filter the listing_id in User's Watchlist model
+            Watchlist.objects.filter(user=request.user, listing=item_listing_id_selected).delete()
+            # check bug
+            # return HttpResponse(f'Item_listing_id {item_listing_id_selected} is removed')
 
+    # Display all items in Watchlist
     all_items = Watchlist.objects.all()[::-1]
     return render(request, 'auctions/watchlist.html', {
         'all_items': all_items
     })
 
-# @login_required
+# @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 # def bid(request):
-#     if request.method == "POST":
-#         listing_id = request.POST
+#     # If request.POST, store listing_id of that listing and redirect to bid.html
+#     if "start_bid" in request.POST:
+#         listing_id = request.POST["listing_id"]
 #         listing = Listing.objects.get(pk=listing_id)
-#         user = User.objects.get(pk=user_id)
-#         bid = Bid.objects.get(pk=bid_id)
-#         return render(request, "auctions/bid.html", {
-#             "listing": listing,
-#             "user": user,
-#             "bid": bid
-#         })
-#     else:
-#         return render(request, "auctions/bid.htm", {
-#             "message": "Please input an existing listing id."
-#         })
-    
+#         #Bid form is submitted
+#         if "bid_price_submit" in request.POST:
+#             bid_price = request.POST["bid_price"]
+#             return HttpResponse(f"New bid: {bid_price}")
+#             # start to compare prices
+#             if bid_price < listing.bid_price:
+#                 # If posted price < listing.bid_price, message = "Please bid higher than current bid!"
+#                 message = "Please bid higher than current bid!"
+#                 # return render(request, "auctions/bid.html", {
+#                 #     "message": message,
+#                 #     "listing": listing
+#                 # })
+#             else:
+#                 # If posted price >= listing.bid_price, message = "You are now the price leader!"
+#                 message = "You are now the price leader!"
+#                 # Update listing.bid_price = posted_price
+#                 # Update an object in Model
+#                 update_listing_bid = Listing.objects.filter(id=listing_id).update(bid_price=bid_price)
+#                 update_listing_bid.save()
 
+#                 # return render(request, "auctions/bid.html", {
+#                 #     "message": message,
+#                 #     "listing": listing
+#                 # })
+
+#         # Else #Bid form is NOT submitted, message = "Let input your Bid!"
+#         else: message = "Let input your Bid!"
+        
+#         # Return
+#         return render(request, "auctions/bid.html", {
+#                 "message": message,
+#                 "listing": listing
+#         })
+
+@login_required(login_url='/login') #redirect to login page if user does not log-in yet
+def bid(request):
+    if request.method == "POST":
+        listing_id = None #display here to use for bigger block code below
+        listing = None #display here to use for bigger block code below
+        if "start_bid" in request.POST:
+            listing_id = request.POST["listing_id"]
+            listing = Listing.objects.get(pk=listing_id)
+            #If listing.bid_price is not saved in Bid model, do it
+        
+            #Bid form is submitted
+        elif "bid_price_submit" in request.POST:
+            bid_price = request.POST["bid_price"]
+            #use current bid_price in Bid model of specific listing_id to compare with the above bid_price
+            return HttpResponse(f"New bid: {bid_price}, Listing id: {listing_id}")
+        
+        # Return
+        return render(request, "auctions/bid.html", {
+                "message": "Test",
+                "listing": listing
+        })
+
+        
+    
 # @login_required
 # def comment(request):
 #     return render(request, "auctions/comment.html")

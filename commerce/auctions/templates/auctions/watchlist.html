@@ -4,15 +4,18 @@
     <h2>Watchlist</h2>
     <div>
         {% for item in all_items %}
-            <a href="{% url 'listing' item.listing.id %}">
-                <ul>
-                    <li>Lisiting id: {{ item.listing.id }}</li>
-                    <li>Title: {{ item.listing.title }}</li>
-                    <li>Watchlist status: {{ item.status }} </li>
-                </ul>
-                
-            </a>
-            <button>Remove</button>
+            
+            <ul>
+                <li><a href="{% url 'listing' item.listing.id %}">Lisiting id: {{ item.listing.id }}</a></li>
+                <li>Title: {{ item.listing.title }}</li>
+                <li><b>Current Bid ($): {{ item.listing.bid_price }}</b></li>
+            </ul>    
+            <form method="post" action="{% url 'watchlist' %}">
+                {% csrf_token %}
+                <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
+                <input type="hidden" name="item_listing_id" value="{{ item.listing.id }}">
+                <button type="submit" name="remove_button">Remove item</button>
+            </form>
         {% endfor %}
     </div>
     

@@ -12,13 +12,13 @@ class ListingAdmin(admin.ModelAdmin):
     list_display = ("id", "category", "title", "description", "bid_price", "image")
 
 class WatchlistAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "listing", "status")
+    list_display = ("id", "user", "listing")
 
 class BidAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "listing", "price", "status")
+    list_display = ("id", "user", "category", "listing", "price")
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "listing", "content", "status")
+    list_display = ("id", "user", "category", "listing", "content")
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Category, CategoryAdmin)
