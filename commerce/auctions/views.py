@@ -75,12 +75,16 @@ def category(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+
     if listing is not None:
         return render(request, "auctions/listing.html", {
             "listing": listing
         })
     else:
         raise Http404("Listing does not exist")
+    
+    
+
 
 # @login_required
 def create(request):
@@ -171,28 +175,14 @@ def watchlist(request):
 
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def bid(request):
-    if request.method == "POST":
-        listing_id = None #display here to use for bigger block code below
-        listing = None #display here to use for bigger block code below
-        if "start_bid" in request.POST:
-            listing_id = request.POST["listing_id"]
-            listing = Listing.objects.get(pk=listing_id)
-            #If listing.bid_price is not saved in Bid model, do it
-        
-            #Bid form is submitted
-        elif "bid_price_submit" in request.POST:
-            bid_price = request.POST["bid_price"]
-            #use current bid_price in Bid model of specific listing_id to compare with the above bid_price
-            return HttpResponse(f"New bid: {bid_price}, Listing id: {listing_id}")
-        
-        # Return
+    if request.method == 'POST':
+        bid_price = request.POST['bid_price']
+        listing_id = request.POST['listing_id']
         return render(request, "auctions/bid.html", {
-                "message": "Test",
-                "listing": listing
+            "bid_price": bid_price,
+            "listing_id": listing_id
         })
-
         
-    
 # @login_required
 # def comment(request):
 #     return render(request, "auctions/comment.html")

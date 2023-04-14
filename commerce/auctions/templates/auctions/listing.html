@@ -21,20 +21,13 @@
         <button type="submit" name="add_button">Add to watchlist</button>
     </form>
 
-    <form method="post" action="{% url 'bid' %}">
-        {% csrf_token %}
-        <input type="hidden" name="listing_id" value="{{ listing.id }}">
-        <button type="submit" name="start_bid">Bid Me!</button>
-    </form>
+    <div> 
+        <form method="post" action="{% url 'bid' %}">
+            {% csrf_token %}
+            <label for="bid">Your Bid:</label><br>   
+            <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
+            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            <button type="submit" name="bid_price_submit">Bid now</button>
+        </form>
+    </div>
 {% endblock %}
-
-<!-- <form method="post" action="{% url 'close_auction' %}">
-    {% csrf_token %}
-    <input type="hidden" name="listing_id" value="{{ listing.id }}">
-    <button type="submit" name="close_auction">Close this listing</button>
-</form> -->
-
-<!-- <div>
-        <button><a href="{% url 'bid' listing.id %}">Bid</a></button>
-        <button><a href="{% url 'comment' listing.id %}">Bid</a></button>
-    </div> -->
