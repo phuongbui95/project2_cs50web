@@ -9,16 +9,16 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "category_name")
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "category", "title", "description", "bid_price", "image")
+    list_display = ("id", "category", "title", "description", "price", "image")
 
 class WatchlistAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing")
 
 class BidAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "listing", "price")
+    list_display = ("id", "user", "listing")
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "listing", "content")
+    list_display = ("id", "user", "listing", "content")
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Category, CategoryAdmin)

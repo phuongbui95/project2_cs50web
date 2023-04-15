@@ -112,13 +112,13 @@ def watchlist(request):
     if request.method == "POST":
         if "add_button" in request.POST:
             # scrap listing's id after hitting the "Add to Watchlist" button 
-            listing_id_posted = Listing.objects.get(pk=request.POST["listing_id"])
+            listing_posted = Listing.objects.get(pk=request.POST["listing_id"])
             # create new Watchlist object
-            if Watchlist.objects.filter(user=request.user, listing=listing_id_posted).exists():
+            if Watchlist.objects.filter(user=request.user, listing=listing_posted).exists():
                 return HttpResponse('Listing already exists')
             else:
                 # Create a new object in Model
-                watchlist_item = Watchlist(user=request.user, listing=listing_id_posted)
+                watchlist_item = Watchlist(user=request.user, listing=listing_posted)
                 watchlist_item.save() #save to database's model
         elif "remove_button" in request.POST:
             item_listing_id_selected = request.POST['item_listing_id']
@@ -133,54 +133,39 @@ def watchlist(request):
         'all_items': all_items
     })
 
-# @login_required(login_url='/login') #redirect to login page if user does not log-in yet
-# def bid(request):
-#     # If request.POST, store listing_id of that listing and redirect to bid.html
-#     if "start_bid" in request.POST:
-#         listing_id = request.POST["listing_id"]
-#         listing = Listing.objects.get(pk=listing_id)
-#         #Bid form is submitted
-#         if "bid_price_submit" in request.POST:
-#             bid_price = request.POST["bid_price"]
-#             return HttpResponse(f"New bid: {bid_price}")
-#             # start to compare prices
-#             if bid_price < listing.bid_price:
-#                 # If posted price < listing.bid_price, message = "Please bid higher than current bid!"
-#                 message = "Please bid higher than current bid!"
-#                 # return render(request, "auctions/bid.html", {
-#                 #     "message": message,
-#                 #     "listing": listing
-#                 # })
-#             else:
-#                 # If posted price >= listing.bid_price, message = "You are now the price leader!"
-#                 message = "You are now the price leader!"
-#                 # Update listing.bid_price = posted_price
-#                 # Update an object in Model
-#                 update_listing_bid = Listing.objects.filter(id=listing_id).update(bid_price=bid_price)
-#                 update_listing_bid.save()
-
-#                 # return render(request, "auctions/bid.html", {
-#                 #     "message": message,
-#                 #     "listing": listing
-#                 # })
-
-#         # Else #Bid form is NOT submitted, message = "Let input your Bid!"
-#         else: message = "Let input your Bid!"
-        
-#         # Return
-#         return render(request, "auctions/bid.html", {
-#                 "message": message,
-#                 "listing": listing
-#         })
-
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def bid(request):
     if request.method == 'POST':
+        #Take posted bid_price and listing_id
         bid_price = request.POST['bid_price']
         listing_id = request.POST['listing_id']
+        listing_posted = Listing.objects.get(pk=request.POST["listing_id"])
+    
+        #Compare newly posted bid to current bid of listing
+        if int(bid_price) >= listing_posted.price:
+            message = f"Your bid {bid_price} is accepted."
+            # Create a new object in Bid Model
+            bid_item = Bid(user=request.user, listing=listing_posted)
+            # If posted Bid is existing, do not save
+            if not Bid.objects.filter(user=request.user, listing=listing_posted):
+                bid_item.save() #save to database's model
+            else:
+                message = f"Your bid {bid_price} is already on the list. Bid higher!"
+
+            # Update price of Listing item
+            Listing.objects.filter(id=listing_id).update(price=bid_price)
+            # update_listing_price.save()
+        else:
+            message = "Bid higher! Click on 'Listing id' to bid again"
+
+        # call out all existing bidded listings of this user
+        existing_bid_listings = Bid.objects.all()[::-1]
+
+        # response to end-user
         return render(request, "auctions/bid.html", {
-            "bid_price": bid_price,
-            "listing_id": listing_id
+            "message": message,
+            "listing_posted": listing_posted,
+            "existing_bid_listings": existing_bid_listings
         })
         
 # @login_required

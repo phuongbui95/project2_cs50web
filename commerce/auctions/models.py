@@ -30,7 +30,7 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name="listing_category")
     title = models.CharField(max_length=100)
     description = models.TextField()
-    bid_price = models.BigIntegerField(default=10)
+    price = models.BigIntegerField(default=10)
     image = models.ImageField(blank=True, upload_to="auctions/static/auctions/images") 
 
 class Watchlist(models.Model):
@@ -41,14 +41,14 @@ class Watchlist(models.Model):
 class Bid(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    price = models.BigIntegerField()
+    # price = models.BigIntegerField()
     
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     content = models.TextField()
 
