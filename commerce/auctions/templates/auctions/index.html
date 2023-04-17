@@ -5,10 +5,10 @@
     <div>
         {% for listing in all_listing %}
             <ul>
-                <li><a href="{% url 'listing' listing.id %}">Listing id: {{ listing.id}} </a></li>
-                <li>Creator id: {{ listing.user.username}} </li>
+                <li><a href="{% url 'listing' listing.id %}">Title: {{ listing }} </a></li>
+                <li> Auction status: <b>{{ listing.status }}</b> </li>
+                <li>Creator: {{ listing.user.username}} </li>
                 <li>Category: {{ listing.category}} </li>
-                <li>Title: {{ listing.title }} </li>
                 <li>Description: {{ listing.description }} </li>
                 <li>Current price: {{ listing.price }} </li>
                 <li>Image: <img src="{{ listing.image }}" alt="No image" style="max-width: 200px;"></li>

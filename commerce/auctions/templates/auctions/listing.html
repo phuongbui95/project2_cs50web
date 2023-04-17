@@ -1,28 +1,40 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Current Listing</h2>
-    <ul>
-        <li>Listing id: {{ listing.id }}</li>
-        <li>Creator id: {{ listing.user.username }}</li>
-        <li>Title: {{ listing.title }}</li>
-        <li>Description: {{ listing.description }}</li>
-        <li><b>Current Bid ($): {{ listing.price }}</b></li>
-        {% if listing.image.url != None %}
-            <!-- remember to add ".url" to link to the image -->
-            <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
-        {% endif %}
-        
-    </ul>
-    
-    <form method="post" action="{% url 'watchlist' %}">
-        {% csrf_token %}
-        <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
-        <input type="hidden" name="listing_id" value="{{ listing.id }}">
-        <button type="submit" name="add_button">Add to watchlist</button>
-    </form>
+    {% if listing.status == "Closed" or message == "Auction is closed" %}
+        <ul>  
+            <li> Title: {{ listing }} </li>
+            {% if message == "Auction is closed" %}
+                <li> Auction status: <b>{{ message }}</b> </li>
+            {% elif listing.status == "Closed" %}
+                <li> Auction status: <b>{{ listing.status }}</b> </li>
+            {% endif %}
+            <li> Winner: {{ bid.user }} </li>
 
-    <div> 
+            <li>Creator: {{ listing.user.username }}</li>
+            <li>Description: {{ listing.description }}</li>
+            <li><b>Current Bid ($): {{ listing.price }}</b></li>
+            {% if listing.image.url != None %}
+                <!-- remember to add ".url" to link to the image -->
+                <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
+            {% endif %}    
+        </ul>
+    {% elif message == "Only creator can close this auction!" %}
+        <h2>{{ message }}</h2>
+        <a href="{% url 'listing' listing.id %}"> Previous page </a>
+    {% else %}
+        <form method="post" action="{% url 'listing' listing.id %}">
+            {% csrf_token %}
+            <button type="submit" name="close_auction">Close Auction</button>
+        </form>
+
+        <form method="post" action="{% url 'watchlist' %}">
+            {% csrf_token %}
+            <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
+            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            <button type="submit" name="add_button">Add to watchlist</button>
+        </form>
+
         <form method="post" action="{% url 'bid' %}">
             {% csrf_token %}
             <label for="bid">Your Bid:</label><br>   
@@ -30,5 +42,31 @@
             <input type="hidden" name="listing_id" value="{{ listing.id }}">
             <button type="submit" name="bid_price_submit">Bid now</button>
         </form>
-    </div>
+
+        <ul>
+            <li>Title: {{ listing }}</li>
+            <li> Auction status: <b>{{ listing.status }}</b> </li>
+            <li>Creator: {{ listing.user.username }}</li>
+            <li>Description: {{ listing.description }}</li>
+            <li><b>Current Bid ($): {{ listing.price }}</b></li>
+            {% if listing.image.url != None %}
+                <!-- remember to add ".url" to link to the image -->
+                <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
+            {% endif %}    
+        </ul>
+
+        <h2>Comments</h2>
+        <form method="post" action="{% url 'listing' listing.id %}">
+            <textarea>pass</textarea>
+            <input type="submit" name="submit_comment">
+        </form>
+
+        <div>
+            <ul>
+                <li>{{ comment.user }}: {{ comment.content }}</li>
+                <li>For example, user ABC: ABC says sth.... </li>
+            </ul>
+        </div>
+    {% endif %} 
+
 {% endblock %}

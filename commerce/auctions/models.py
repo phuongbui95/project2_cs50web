@@ -33,6 +33,15 @@ class Listing(models.Model):
     description = models.TextField()
     price = models.BigIntegerField(default=10)
     image = models.ImageField(blank=True, upload_to="auctions/static/auctions/images") 
+    STATUS_LIST = (
+        ("Active", "Active"),    
+        ("Closed", "Closed"),
+    )
+                                       
+    status = models.CharField(max_length=64, choices=STATUS_LIST, default="Active")
+
+    def __str__(self):
+        return self.title
 
 class Watchlist(models.Model):
     id = models.AutoField(primary_key=True)

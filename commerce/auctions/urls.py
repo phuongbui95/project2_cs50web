@@ -10,14 +10,14 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("category", views.category, name="category"),
+    path("listing/<int:listing_id>", views.listing, name="listing"),
     
     #require to login
     path("create", views.create, name="create"),
-    path("listing/<int:listing_id>", views.listing, name="listing"),
     path("watchlist", views.watchlist, name="watchlist"),
     path("bid", views.bid, name="bid"),
+    # path("result", views.result, name="result"),
     # path("comment", views.comment, name="comment"),
-    # path("close_auction", views.close_auction, name="close_auction"),
     
 ]
 

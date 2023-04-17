@@ -76,12 +76,43 @@ def category(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
 
-    if listing is not None:
-        return render(request, "auctions/listing.html", {
-            "listing": listing
-        })
+    if request.method == "POST":
+        current_user = request.user
+        # Close Auction
+        if "close_auction" in request.POST:
+            # creator
+            if listing.user == current_user or listing.status=="Closed":
+                message = "Auction is closed"
+                # Update listing_status to "closed": status = 1
+                Listing.objects.filter(id=listing_id).update(status="Closed")
+                
+            # not creator
+            else:
+                message = "Only creator can close this auction!"
+            
+            # find bid winner
+            # winning_bid = Bid.objects.get(listing=listing)
+            winning_bid = Bid.objects.filter(listing=listing).first()
+
+            #return messages
+            
+            return render(request, "auctions/listing.html", {
+                    "message": message,
+                    "listing": listing,
+                    "bid": winning_bid
+            })
+        # Comment section
+        else:
+            pass
+
     else:
-        raise Http404("Listing does not exist")
+        ######--------####
+        if listing is not None:
+            return render(request, "auctions/listing.html", {
+                "listing": listing
+            })
+        else:
+            raise Http404("Listing does not exist")
     
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def create(request):
@@ -109,14 +140,23 @@ def create(request):
     
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def watchlist(request):
+    ###--- 1. Your created listings --- ###
+    current_user = request.user
+    my_listings = Listing.objects.filter(user=current_user)
+
+    ###--- 2. Listings to Bid --- ###
     # Add to Watchlist
     if request.method == "POST":
         if "add_button" in request.POST:
             # scrap listing's id after hitting the "Add to Watchlist" button 
             listing_posted = Listing.objects.get(pk=request.POST["listing_id"])
+            listing_creator = listing_posted.user
+
             # create new Watchlist object
-            if Watchlist.objects.filter(user=request.user, listing=listing_posted).exists():
+            if Watchlist.objects.filter(user=request.user, listing=listing_posted): #.exists():
                 return HttpResponse('Listing already exists')
+            elif current_user == listing_creator:
+                return HttpResponse('You are the creator of this listing!')
             else:
                 # Create a new object in Model
                 watchlist_item = Watchlist(user=request.user, listing=listing_posted)
@@ -125,22 +165,23 @@ def watchlist(request):
             item_listing_id_selected = request.POST['item_listing_id']
             # filter the listing_id in User's Watchlist model
             Watchlist.objects.filter(user=request.user, listing=item_listing_id_selected).delete()
-            # check bug
-            # return HttpResponse(f'Item_listing_id {item_listing_id_selected} is removed')
 
     # Display all items in Watchlist
-    all_items = Watchlist.objects.all()[::-1]
+    bid_listings = Watchlist.objects.all()[::-1]
     return render(request, 'auctions/watchlist.html', {
-        'all_items': all_items
+        'my_listings': my_listings,
+        'bid_listings': bid_listings
     })
 
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def bid(request):
+    current_user = request.user
     if request.method == 'POST':
         #Take posted bid_price and listing_id
         bid_price = request.POST['bid_price']
         listing_id = request.POST['listing_id']
         listing_posted = Listing.objects.get(pk=request.POST["listing_id"])
+        listing_creator = listing_posted.user
     
         #Compare newly posted bid to current bid of listing
         if int(bid_price) >= listing_posted.price:
@@ -148,7 +189,9 @@ def bid(request):
             # Create a new object in Bid Model
             bid_item = Bid(user=request.user, listing=listing_posted)
             # If posted Bid is existing, do not save
-            if not Bid.objects.filter(user=request.user, listing=listing_posted):
+            if current_user == listing_creator:
+                return HttpResponse('You are the creator of this listing!')
+            elif not Bid.objects.filter(user=request.user, listing=listing_posted):
                 bid_item.save() #save to database's model
             else:
                 message = f"Your bid {bid_price} is already on the list. Bid higher!"
@@ -168,6 +211,7 @@ def bid(request):
             "listing_posted": listing_posted,
             "existing_bid_listings": existing_bid_listings
         })
+     
         
 # @login_required
 # def comment(request):
