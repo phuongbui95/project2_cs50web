@@ -83,17 +83,18 @@ def listing(request, listing_id):
     else:
         raise Http404("Listing does not exist")
     
-    
-
-
-# @login_required
+@login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def create(request):
     if request.POST:
         form = CreateListingForm(request.POST, request.FILES)
-        # print(request.FILES)
+        
         # check if form data is valid (server-side)
         if form.is_valid():
-            form.save()
+            # call out listing's data from form
+            listing = form.save(commit=False)
+            # add user to listing's data
+            listing.user = request.user
+            listing.save()
             # Redirect user to active listing
             return HttpResponseRedirect(reverse("index"))   
         else:

@@ -5,6 +5,7 @@ from django.db import models
 class User(AbstractUser):
     #already have fields for a username, email, password, etc., 
     # pass
+    id = models.AutoField(primary_key=True)
     def __str__(self):
         return self.username #present username as key instead of id
     
@@ -25,9 +26,9 @@ class Category(models.Model):
 
 class Listing(models.Model):
     id = models.AutoField(primary_key=True)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # key id could be nullable: null=True
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name="listing_category")
+    # null=True, blank=True => Set no default to field
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name="creator") #user's id
+    category = models.ForeignKey(Category, default=5, on_delete=models.CASCADE, related_name="listing_category")
     title = models.CharField(max_length=100)
     description = models.TextField()
     price = models.BigIntegerField(default=10)
@@ -41,14 +42,11 @@ class Watchlist(models.Model):
 class Bid(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
-    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    # price = models.BigIntegerField()
     
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
-    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     content = models.TextField()
 
