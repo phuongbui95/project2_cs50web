@@ -3,7 +3,7 @@
 {% block body %}
     <h2>Watchlist</h2>
     <div>
-        <h3>My created listings:</h3>
+        <h4>Your created listings:</h4>
             {% for my_listing in my_listings %}
                 <ul>
                     <li><a href="{% url 'listing' my_listing.id %}">Lisiting id: {{ my_listing.id }}</a></li>
@@ -12,23 +12,22 @@
                     <li><b>Current Bid ($): {{ my_listing.price }}</b></li>
                 </ul>    
             {% endfor %}
+        <br><br>
     </div>
 
     <div>
-        <h3>Ready to Bid:</h3>
+        <h4>Ready to Bid:</h4>
         {% for bid_listing in bid_listings %}
             <ul>
-                <li><a href="{% url 'listing' bid_listing.listing.id %}">Lisiting id: {{ bid_listing.listing.id }}</a></li>
-                <li>Title: {{ bid_listing.listing.title }}</li>
-                <li>Creator: {{ bid_listing.listing.title }}</li>
+                <li><a href="{% url 'listing' bid_listing.listing.id %}">Title: {{ bid_listing.listing }}</a></li>
+                <li>Creator: {{ bid_listing.listing.user }}</li>
                 <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
-            </ul>    
-            <form method="post" action="{% url 'watchlist' %}">
-                {% csrf_token %}
-                <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
-                <input type="hidden" name="item_listing_id" value="{{ item.listing.id }}">
-                <button type="submit" name="remove_button">Remove item</button>
-            </form>
+                <form method="post" action="{% url 'watchlist' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
+                    <button type="submit" name="remove_button">Remove item</button>
+                </form>
+            </ul>  
         {% endfor %}
     </div>
     

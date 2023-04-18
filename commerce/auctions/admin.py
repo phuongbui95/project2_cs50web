@@ -9,7 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "category_name")
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category", "title", "description", "price", "image", "status")
+    list_display = ("id", "user", "category", "title", "description", "price", "status","image")
 
 class WatchlistAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing")

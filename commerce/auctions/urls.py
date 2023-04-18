@@ -10,15 +10,14 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("category", views.category, name="category"),
+    path("listings_by_cat/<int:cat_id>", views.listings_by_cat, name="listings_by_cat"),
     path("listing/<int:listing_id>", views.listing, name="listing"),
     
     #require to login
     path("create", views.create, name="create"),
     path("watchlist", views.watchlist, name="watchlist"),
     path("bid", views.bid, name="bid"),
-    # path("result", views.result, name="result"),
-    # path("comment", views.comment, name="comment"),
-    
 ]
 
+# Add directory for Media uploading
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -68,13 +68,29 @@ def register(request):
         return render(request, "auctions/register.html")
 
 def category(request):
-    category = Category.objects.all()
+    categories = Category.objects.all()
     return render(request,"auctions/category.html", {
-        "category": category
+        "categories": categories
+    })
+
+def listings_by_cat(request, cat_id):
+    category = Category.objects.get(pk=cat_id)
+    all_listings = Listing.objects.filter(category=category)
+    if all_listings is None:
+        debug_message = f"No listings in this {category}"
+    else: 
+        debug_message = f"There are {len(all_listings)} listing(s) in {category}"
+
+    return render(request,"auctions/listings_by_cat.html", {
+        "debug_message": debug_message,
+        "category_name": category,
+        "all_listings": all_listings,
+
     })
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    all_comments = Comment.objects.filter(listing=listing)[::-1]
 
     if request.method == "POST":
         current_user = request.user
@@ -95,31 +111,38 @@ def listing(request, listing_id):
             winning_bid = Bid.objects.filter(listing=listing).first()
 
             #return messages
-            
+
             return render(request, "auctions/listing.html", {
                     "message": message,
                     "listing": listing,
                     "bid": winning_bid
             })
+        
         ###-- Comment section --###
-        else:
-            # If comment submitted, add user (current_user) and content to Comment Model
-            content = request.POST["comment"]
-            # Create a new object in Model
-            comment = Comment(user=current_user, listing=listing, content=content)
-            comment.save() #save to database's model
+        if "comment" in request.POST:
+            # Only users who signed in can comment
+            if current_user.is_authenticated:
+                # If comment submitted, add user (current_user) and content to Comment Model
+                content = request.POST["comment"]
+                # Create a new object in Model
+                comment = Comment(user=current_user, listing=listing, content=content)
+                comment.save() #save to database's model
 
-            all_comments = Comment.objects.all()[::-1]
-            return render(request, "auctions/listing.html", {
-                "listing": listing,
-                "all_comments": all_comments
+                # Call the newly updated all_comments
+                all_comments = Comment.objects.filter(listing=listing)[::-1]
+                return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "all_comments": all_comments
             })
+            else:
+                return HttpResponseRedirect(reverse("login"))
 
     else:
         ######--------####
         if listing is not None:
             return render(request, "auctions/listing.html", {
-                "listing": listing
+                "listing": listing,
+                "all_comments": all_comments
             })
         else:
             raise Http404("Listing does not exist")
@@ -171,10 +194,12 @@ def watchlist(request):
                 # Create a new object in Model
                 watchlist_item = Watchlist(user=request.user, listing=listing_posted)
                 watchlist_item.save() #save to database's model
-        elif "remove_button" in request.POST:
+        # elif "remove_button" in request.POST:
+        else:
             item_listing_id_selected = request.POST['item_listing_id']
             # filter the listing_id in User's Watchlist model
             Watchlist.objects.filter(user=request.user, listing=item_listing_id_selected).delete()
+
 
     # Display all items in Watchlist
     bid_listings = Watchlist.objects.all()[::-1]
@@ -190,21 +215,22 @@ def bid(request):
         #Take posted bid_price and listing_id
         bid_price = request.POST['bid_price']
         listing_id = request.POST['listing_id']
-        listing_posted = Listing.objects.get(pk=request.POST["listing_id"])
+        listing_posted = Listing.objects.get(pk=listing_id)
         listing_creator = listing_posted.user
     
         #Compare newly posted bid to current bid of listing
         if int(bid_price) >= listing_posted.price:
-            message = f"Your bid {bid_price} is accepted."
-            # Create a new object in Bid Model
-            bid_item = Bid(user=request.user, listing=listing_posted)
-            # If posted Bid is existing, do not save
+            # Listing's creator cannot bid
             if current_user == listing_creator:
                 return HttpResponse('You are the creator of this listing!')
+            # If posted Bid is existing, do not save
             elif not Bid.objects.filter(user=request.user, listing=listing_posted):
+                message = f"Your bid {bid_price} is accepted."
+                # Create a new object in Bid Model
+                bid_item = Bid(user=request.user, listing=listing_posted)
                 bid_item.save() #save to database's model
             else:
-                message = f"Your bid {bid_price} is already on the list. Bid higher!"
+                message = f"You changed your bid to {bid_price}."
 
             # Update price of Listing item
             Listing.objects.filter(id=listing_id).update(price=bid_price)
@@ -222,7 +248,3 @@ def bid(request):
             "existing_bid_listings": existing_bid_listings
         })
      
-        
-# @login_required
-# def comment(request):
-#     return render(request, "auctions/comment.html")
