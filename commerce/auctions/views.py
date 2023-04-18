@@ -101,9 +101,19 @@ def listing(request, listing_id):
                     "listing": listing,
                     "bid": winning_bid
             })
-        # Comment section
+        ###-- Comment section --###
         else:
-            pass
+            # If comment submitted, add user (current_user) and content to Comment Model
+            content = request.POST["comment"]
+            # Create a new object in Model
+            comment = Comment(user=current_user, listing=listing, content=content)
+            comment.save() #save to database's model
+
+            all_comments = Comment.objects.all()[::-1]
+            return render(request, "auctions/listing.html", {
+                "listing": listing,
+                "all_comments": all_comments
+            })
 
     else:
         ######--------####
