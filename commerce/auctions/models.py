@@ -11,13 +11,13 @@ class User(AbstractUser):
     
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
-    CATEGORY_LIST = (
+    CATEGORY_LIST = [
         ("Electronics", "Electronics"),    
         ("Home", "Home"),
         ("Toys", "Toys"),
         ("Fashion", "Fashion"),
         ("Other", "Other"),
-    )
+    ]
                                        
     category_name = models.CharField(max_length=64, choices=CATEGORY_LIST, default="Other")
     # display the key as category_name but id
@@ -28,7 +28,7 @@ class Listing(models.Model):
     id = models.AutoField(primary_key=True)
     # null=True, blank=True => Set no default to field
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name="creator") #user's id
-    category = models.ForeignKey(Category, default=5, on_delete=models.CASCADE, related_name="listing_category")
+    category = models.ForeignKey(Category, default="Other", on_delete=models.CASCADE, related_name="listing_category")
     title = models.CharField(max_length=100)
     description = models.TextField()
     price = models.BigIntegerField(default=10)
