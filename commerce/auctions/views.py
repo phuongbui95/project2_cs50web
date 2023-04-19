@@ -4,15 +4,22 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .models import User, Listing, Comment, Category, Bid , Watchlist
 from .forms import CreateListingForm
 
+# This variable is used for all pages
+# Call out categories for selection in Navigation bar
+categories = Category.objects.all()
+
 # get the data from Listing model
 def index(request):
-    all_listing = Listing.objects.all()[::-1]
+    # Only display listings which status = "Active"
+    all_listing = Listing.objects.filter(status="Active")[::-1]
     return render(request, "auctions/index.html", {
-        "all_listing": all_listing
+        "all_listing": all_listing,
+        "categories": categories
     })
 
 
@@ -33,7 +40,7 @@ def login_view(request):
                 "message": "Invalid username and/or password."
             })
     else:
-        return render(request, "auctions/login.html")
+        return render(request, "auctions/login.html", {"categories": categories})
 
 
 def logout_view(request):
@@ -51,7 +58,8 @@ def register(request):
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return render(request, "auctions/register.html", {
-                "message": "Passwords must match."
+                "message": "Passwords must match.",
+                "categories": categories
             })
 
         # Attempt to create new user
@@ -60,12 +68,13 @@ def register(request):
             user.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
-                "message": "Username already taken."
+                "message": "Username already taken.",
+                "categories": categories
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "auctions/register.html")
+        return render(request, "auctions/register.html", {"categories": categories})
 
 def category(request):
     categories = Category.objects.all()
@@ -75,23 +84,19 @@ def category(request):
 
 def listings_by_cat(request, cat_id):
     category = Category.objects.get(pk=cat_id)
-    all_listings = Listing.objects.filter(category=category)
-    if all_listings is None:
-        debug_message = f"No listings in this {category}"
-    else: 
-        debug_message = f"There are {len(all_listings)} listing(s) in {category}"
+    all_listings = Listing.objects.filter(Q(category=category) & Q(status="Active"))
 
     return render(request,"auctions/listings_by_cat.html", {
-        "debug_message": debug_message,
         "category_name": category,
         "all_listings": all_listings,
-
+        "categories": categories
     })
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    # all comments before new comment is added
     all_comments = Comment.objects.filter(listing=listing)[::-1]
-
+    
     if request.method == "POST":
         current_user = request.user
         # Close Auction
@@ -115,7 +120,8 @@ def listing(request, listing_id):
             return render(request, "auctions/listing.html", {
                     "message": message,
                     "listing": listing,
-                    "bid": winning_bid
+                    "bid": winning_bid,
+                    "categories": categories
             })
         
         ###-- Comment section --###
@@ -132,7 +138,8 @@ def listing(request, listing_id):
                 all_comments = Comment.objects.filter(listing=listing)[::-1]
                 return render(request, "auctions/listing.html", {
                     "listing": listing,
-                    "all_comments": all_comments
+                    "all_comments": all_comments,
+                    "categories": categories
             })
             else:
                 return HttpResponseRedirect(reverse("login"))
@@ -142,7 +149,8 @@ def listing(request, listing_id):
         if listing is not None:
             return render(request, "auctions/listing.html", {
                 "listing": listing,
-                "all_comments": all_comments
+                "all_comments": all_comments,
+                "categories": categories
             })
         else:
             raise Http404("Listing does not exist")
@@ -164,11 +172,13 @@ def create(request):
         else:
             # If the form is invalid, re-render the page with existing information.
             render(request,"auctions/create.html", {
-                'form': form
+                'form': form,
+                "categories": categories
             })
 
     return render(request,"auctions/create.html", {
-        'form': CreateListingForm()
+        'form': CreateListingForm(),
+        "categories": categories
     })
     
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
@@ -205,7 +215,8 @@ def watchlist(request):
     bid_listings = Watchlist.objects.all()[::-1]
     return render(request, 'auctions/watchlist.html', {
         'my_listings': my_listings,
-        'bid_listings': bid_listings
+        'bid_listings': bid_listings,
+        "categories": categories
     })
 
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
@@ -245,6 +256,7 @@ def bid(request):
         return render(request, "auctions/bid.html", {
             "message": message,
             "listing_posted": listing_posted,
-            "existing_bid_listings": existing_bid_listings
+            "existing_bid_listings": existing_bid_listings,
+            "categories": categories
         })
      

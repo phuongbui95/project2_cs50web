@@ -1,34 +1,38 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Watchlist</h2>
-    <div>
-        <h4>Your created listings:</h4>
-            {% for my_listing in my_listings %}
-                <ul>
-                    <li><a href="{% url 'listing' my_listing.id %}">Lisiting id: {{ my_listing.id }}</a></li>
-                    <li> Auction status: <b>{{ my_listing.status }}</b> </li>
-                    <li>Title: {{ my_listing.title }}</li>
-                    <li><b>Current Bid ($): {{ my_listing.price }}</b></li>
-                </ul>    
-            {% endfor %}
-        <br><br>
-    </div>
+    <h2 class="section">Watchlist</h2>
+    <div class="row">
+        <div class="split">
+            <h5>Your created listings:</h5>
+            <div class="left">
+                {% for my_listing in my_listings %}
+                    <ul>
+                        <li><a href="{% url 'listing' my_listing.id %}">Lisiting id: {{ my_listing.id }}</a></li>
+                        <li> Auction status: <b>{{ my_listing.status }}</b> </li>
+                        <li>Title: {{ my_listing.title }}</li>
+                        <li><b>Current Bid ($): {{ my_listing.price }}</b></li>
+                    </ul>    
+                {% endfor %}
+            </div>
+        </div>
 
-    <div>
-        <h4>Ready to Bid:</h4>
-        {% for bid_listing in bid_listings %}
-            <ul>
-                <li><a href="{% url 'listing' bid_listing.listing.id %}">Title: {{ bid_listing.listing }}</a></li>
-                <li>Creator: {{ bid_listing.listing.user }}</li>
-                <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
-                <form method="post" action="{% url 'watchlist' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
-                    <button type="submit" name="remove_button">Remove item</button>
-                </form>
-            </ul>  
-        {% endfor %}
+        <div class="split">
+            <h5>Ready to Bid:</h5>
+            <div class="right">
+                {% for bid_listing in bid_listings %}
+                <ul>
+                    <li><a href="{% url 'listing' bid_listing.listing.id %}">Title: {{ bid_listing.listing }}</a></li>
+                    <li>Creator: {{ bid_listing.listing.user }}</li>
+                    <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
+                    <form method="post" action="{% url 'watchlist' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
+                        <button type="submit" name="remove_button">Remove item</button>
+                    </form>
+                </ul>  
+            {% endfor %}
+            </div>
+        </div>
     </div>
-    
 {% endblock %}

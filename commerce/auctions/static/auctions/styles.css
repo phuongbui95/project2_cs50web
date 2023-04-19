@@ -1,3 +1,4 @@
+/* layout.html */
 body {
     padding: 10px;
 }
@@ -8,4 +9,59 @@ body {
     right: 0;
 
     padding: 10px;
+}
+
+.section {
+    padding-left: 15px;
+}
+/* index.html */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns per row */
+    /* make each item sit side by side */
+}
+
+/* watchlist.html */
+.row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns per row */
+    /* make each item sit side by side */
+    
+}
+
+.split{
+    padding-left: 30px;
+}
+
+.left {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns per row */
+    /* make each item sit side by side */
+}
+
+.right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns per row */
+    /* make each item sit side by side */
+}
+
+.right button {
+    width: 100px;
+    height: 25px;
+    font-size:small;
+}
+/* category.html */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }
