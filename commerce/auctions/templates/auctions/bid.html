@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>You're working Bid:</h1>
+    <ul>
+        <li>
+            <a href="{% url 'listing' listing_posted.id %}">Listing id: {{ listing_posted.id }}</a>
+        </li>
+        <li>Title: {{ listing_posted.title }}</li>
+        <li>Current Price: {{ listing_posted.price }}</li>
+    </ul>
+    <div> {{ message }}</div>
+    
+    <h1>Your existing bids</h1>
+    <div>
+        {% for bid_listing in existing_bid_listings %}
+            <ul>
+                <li><a href="{% url 'listing' bid_listing.listing.id %}">Listing id: {{ bid_listing.listing.id }}</a></li>
+                <li> Auction status: <b>{{ bid_listing.listing.status }}</b> </li>
+                <li>Title: {{ bid_listing.listing.title }} </li>
+                <li>Creator: {{ bid_listing.listing.user }} </li>
+                <li>Price: {{ bid_listing.listing.price }} </li>
+            </ul>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+
+<!-- {% for listing in listings %}
+    <ul>
+        <li>Listing ID: {{ listing.id }} </li>
+        <li>Title: {{ listing.title }} </li>
+        <li><b>Current Bid: {{ listing.bid_price }}</b></li>
+    </ul>
+{% endfor %} -->
