@@ -3,16 +3,19 @@
 {% block body %}
     <h2 class="section">Active Listings</h2>
     <div class="grid">
-        {% for listing in all_listing %}
+        {% for listing in all_listings %}
             <ul>
-                <li><a href="{% url 'listing' listing.id %}">Title: {{ listing }} </a></li>
-                <!-- <li> Auction status: <b>{{ listing.status }}</b> </li> -->
-                <li>Creator: {{ listing.user.username}} </li>
-                <li>Category: {{ listing.category}} </li>
-                <li>Description: {{ listing.description }} </li>
-                <li><b>Current price: {{ listing.price }}</b></li>
-                <!-- if image is not displayed, use listing.image.url -->
-                <li>Image: <img src="{{ listing.image }}" alt="No image" style="max-width: 100px;"></li>
+                <div id="image_box">
+                    <img src="{{ listing.image }}" alt="No image" id="resize">
+                </div>
+                <div>
+                    <li><a href="{% url 'listing' listing.id %}">Title: {{ listing }} </a></li>
+                    <!-- <li> Auction status: <b>{{ listing.status }}</b> </li> -->
+                    <li>Creator: {{ listing.user.username}} </li>
+                    <li>Category: {{ listing.category}} </li>
+                    <li id="description">Description: {{ listing.description }} </li>
+                    <li><b>Current price: {{ listing.price }}</b></li>
+                </div>
             </ul>
         {% endfor %}
     </div>

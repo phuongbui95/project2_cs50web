@@ -11,14 +11,17 @@
             {% endif %}
             <li> Winner: {{ bid.user }} </li>
 
+            <!-- If no photo available, pass to avoid error -->
+            {% if listing.image %}
+                <li><img src="{{ listing.image.url }}" alt="No Image" style="max-width: 200px;"></li>
+            {% else %}
+                <li> No photo available</li>
+            {% endif %}    
             <li>Creator: {{ listing.user.username }}</li>
             <li>Category: {{ listing.category }}</li>
             <li>Description: {{ listing.description }}</li>
             <li><b>Current Bid ($): {{ listing.price }}</b></li>
-            {% if listing.image.url != None %}
-                <!-- remember to add ".url" to link to the image -->
-                <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
-            {% endif %}    
+            
         </ul>
     {% elif message == "Only creator can close this auction!" %}
         <h2>{{ message }}</h2>
@@ -45,16 +48,18 @@
         </form>
 
         <ul>
+            <!-- If no photo available, pass to avoid error -->
+            {% if listing.image %}
+                <img src="{{ listing.image.url }}" alt="No Image" style="max-width: 200px;">
+            {% else %}
+                <li> No photo available</li>
+            {% endif %}
             <li>Title: {{ listing }}</li>
             <li> Auction status: <b>{{ listing.status }}</b> </li>
             <li>Creator: {{ listing.user.username }}</li>
             <li>Category: {{ listing.category }}</li>
             <li>Description: {{ listing.description }}</li>
             <li><b>Current Bid ($): {{ listing.price }}</b></li>
-            {% if listing.image.url != None %}
-                <!-- remember to add ".url" to link to the image -->
-                <li>Image: <img src="{{ listing.image.url }}" alt="Image" style="max-width: 200px;"></li>
-            {% endif %}    
         </ul>
 
         <h2>Comments</h2>

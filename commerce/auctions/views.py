@@ -16,9 +16,9 @@ categories = Category.objects.all()
 # get the data from Listing model
 def index(request):
     # Only display listings which status = "Active"
-    all_listing = Listing.objects.filter(status="Active")[::-1]
+    all_listings = Listing.objects.filter(status="Active")[::-1]
     return render(request, "auctions/index.html", {
-        "all_listing": all_listing,
+        "all_listings": all_listings,
         "categories": categories
     })
 

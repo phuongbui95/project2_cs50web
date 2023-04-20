@@ -14,11 +14,32 @@ body {
 .section {
     padding-left: 15px;
 }
+
 /* index.html */
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 columns per row */
-    /* make each item sit side by side */
+    grid-template-rows: 300px;
+
+    padding-top: 20px;
+}
+
+#image_box {
+    border: 1px solid none;
+    height: 100px; 
+    overflow: hidden;
+}
+
+#resize {
+    height: 100px;
+    /* same height as image_box */
+    width: auto; 
+    /* width will be automatically adjust to height */
+}
+
+#description {
+    height: 2em; 
+    overflow: hidden;
 }
 
 /* watchlist.html */

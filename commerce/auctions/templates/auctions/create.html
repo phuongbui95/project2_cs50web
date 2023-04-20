@@ -1,12 +1,47 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Create Listing</h2>
-    <!-- enctype="multipart/form-data": The enctype attribute specifies how the form-data should be encoded when submitting it to the server. -->
-    <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save">
-    </form>
+    <div style="padding-left: 15px;">
+        <h2>Create Listing</h2>
+        <!-- enctype="multipart/form-data": The enctype attribute specifies how the form-data should be encoded when submitting it to the server. -->
+        <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input class="form-control" autofocus type="text" name="product_title" placeholder="Your product name">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Starting Bid">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Describe your product HERE"></textarea>
+            </div>
     
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Upload your Image here</label>
+                <input class="form-control" type="file" id="formFile">
+            </div>
+    
+            <label class="form-label">Product Category</label>
+                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
+            <datalist id="datalistOptions">
+                <option value="Electronics">
+                <option value="Home">
+                <option value="Fashion">
+                <option value="Toys">
+                <option value="Other">
+            </datalist>    
+
+            <div style="padding-top: 10px;">
+                <input class="btn btn-primary" type="submit" value="Save">
+            </div>
+            
+            <!-- {{ form.as_p }}
+            <input type="submit" value="Save"> -->
+        </form>
+    </div>
 {% endblock %}
