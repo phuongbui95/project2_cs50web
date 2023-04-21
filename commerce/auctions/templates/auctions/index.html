@@ -4,6 +4,7 @@
     <h2 class="section">Active Listings</h2>
     <div class="grid">
         {% for listing in all_listings %}
+        <div class="item_container">
             <ul>
                 <div id="image_box">
                     <img src="{{ listing.image }}" alt="No image" id="resize">
@@ -17,6 +18,7 @@
                     <li><b>Current price: {{ listing.price }}</b></li>
                 </div>
             </ul>
+        </div>    
         {% endfor %}
     </div>
 {% endblock %}

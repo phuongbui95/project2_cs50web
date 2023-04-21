@@ -6,21 +6,23 @@
     <!-- grid only works when 'for' tag grab around <ul> -->
     <div class="grid"> 
         {% for listing in all_listings %}
-        <ul>
-            <div id="image_box">
-                <!-- If no photo available, pass to avoid error -->
-                {% if listing.image %}
-                    <img src="{{ listing.image.url }}" alt="No Image" id="resize">
-                {% else %}
-                    <li> No photo available</li>
-                {% endif %}
-            </div>
-            
-            <li><a href="{% url 'listing' listing.id %}" >{{ listing }}</a></li>
-            <li>Creator: {{ listing.user}}</li>
-            <li id="description">Description: {{ listing.description}}</li>
-            <li>Current bid: <b>{{ listing.price}}</b></li>
-        </ul>   
+        <div class="item_container">
+            <ul>
+                <div id="image_box">
+                    <!-- If no photo available, pass to avoid error -->
+                    {% if listing.image %}
+                        <img src="{{ listing.image.url }}" alt="No Image" id="resize">
+                    {% else %}
+                        <li> No photo available</li>
+                    {% endif %}
+                </div>
+                
+                <li><a href="{% url 'listing' listing.id %}" >{{ listing }}</a></li>
+                <li>Creator: {{ listing.user}}</li>
+                <li id="description">Description: {{ listing.description}}</li>
+                <li>Current bid: <b>{{ listing.price}}</b></li>
+            </ul>   
+        </div>
         {% endfor %}
     </div>
     

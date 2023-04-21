@@ -19,15 +19,19 @@ body {
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 columns per row */
-    grid-template-rows: 300px;
+    grid-template-rows: 250px;
+    gap: 20px;
+}
 
-    padding-top: 20px;
+.item_container {
+    border: 1px solid black;
+    border-radius: 10px;
 }
 
 #image_box {
-    border: 1px solid none;
     height: 100px; 
     overflow: hidden;
+    padding-top: 5px;
 }
 
 #resize {
@@ -58,12 +62,14 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns per row */
     /* make each item sit side by side */
+    gap: 10px;
 }
 
 .right {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns per row */
     /* make each item sit side by side */
+    gap: 10px;
 }
 
 .right button {
@@ -85,4 +91,19 @@ body {
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* listing.html */
+.listing_image {
+    padding-left: 30px;
+
+    height: 400px; 
+    overflow: hidden;
+}
+
+.listing_image_resized {
+    height: 400px;
+    /* same height as image_box */
+    width: auto; 
+    /* width will be automatically adjust to height */
 }

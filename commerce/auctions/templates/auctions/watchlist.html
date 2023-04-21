@@ -1,18 +1,23 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2 class="section">Watchlist</h2>
+    <div class="section">
+        <h2 style="display:inline-block;">Watchlist &nbsp;</h2><h8>(To visit listing page, click on hyperlink)</h8>
+    </div>
+    
     <div class="row">
         <div class="split">
             <h5>Your created listings:</h5>
             <div class="left">
                 {% for my_listing in my_listings %}
+                <div class="item_container">
                     <ul>
-                        <li><a href="{% url 'listing' my_listing.id %}">Lisiting id: {{ my_listing.id }}</a></li>
+                        <li><a href="{% url 'listing' my_listing.id %}">{{ my_listing }}</a></li>
                         <li> Auction status: <b>{{ my_listing.status }}</b> </li>
-                        <li>Title: {{ my_listing.title }}</li>
                         <li><b>Current Bid ($): {{ my_listing.price }}</b></li>
                     </ul>    
+                </div>
+                    
                 {% endfor %}
             </div>
         </div>
@@ -21,16 +26,18 @@
             <h5>Ready to Bid:</h5>
             <div class="right">
                 {% for bid_listing in bid_listings %}
-                <ul>
-                    <li><a href="{% url 'listing' bid_listing.listing.id %}">Title: {{ bid_listing.listing }}</a></li>
-                    <li>Creator: {{ bid_listing.listing.user }}</li>
-                    <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
-                    <form method="post" action="{% url 'watchlist' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
-                        <button type="submit" name="remove_button">Remove item</button>
-                    </form>
-                </ul>  
+                <div class="item_container">
+                    <ul>
+                        <li><a href="{% url 'listing' bid_listing.listing.id %}">{{ bid_listing.listing }}</a></li>
+                        <li>Creator: {{ bid_listing.listing.user }}</li>
+                        <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
+                        <form method="post" action="{% url 'watchlist' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
+                            <button type="submit" name="remove_button">Remove item</button>
+                        </form>
+                    </ul> 
+                </div> 
             {% endfor %}
             </div>
         </div>

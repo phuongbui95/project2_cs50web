@@ -161,7 +161,9 @@ def create(request):
         form = CreateListingForm(request.POST, request.FILES)
         
         # check if form data is valid (server-side)
+        print(form.errors)
         if form.is_valid():
+            
             # call out listing's data from form
             listing = form.save(commit=False)
             # add user to listing's data
@@ -171,6 +173,7 @@ def create(request):
             return HttpResponseRedirect(reverse("index"))   
         else:
             # If the form is invalid, re-render the page with existing information.
+            return HttpResponse("Sth wrong!")
             render(request,"auctions/create.html", {
                 'form': form,
                 "categories": categories
@@ -228,14 +231,14 @@ def bid(request):
         listing_id = request.POST['listing_id']
         listing_posted = Listing.objects.get(pk=listing_id)
         listing_creator = listing_posted.user
-    
+
+        # Listing's creator cannot bid
+        if current_user == listing_creator:
+            message = 'Cannot bid your own listing!'
         #Compare newly posted bid to current bid of listing
-        if int(bid_price) >= listing_posted.price:
-            # Listing's creator cannot bid
-            if current_user == listing_creator:
-                return HttpResponse('You are the creator of this listing!')
-            # If posted Bid is existing, do not save
-            elif not Bid.objects.filter(user=request.user, listing=listing_posted):
+        elif int(bid_price) >= listing_posted.price:         
+        # If posted Bid is existing, do not save
+            if not Bid.objects.filter(user=request.user, listing=listing_posted):
                 message = f"Your bid {bid_price} is accepted."
                 # Create a new object in Bid Model
                 bid_item = Bid(user=request.user, listing=listing_posted)

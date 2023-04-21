@@ -6,42 +6,35 @@
         <!-- enctype="multipart/form-data": The enctype attribute specifies how the form-data should be encoded when submitting it to the server. -->
         <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
             {% csrf_token %}
+            <!-- I won't use datalist of Boothstrap but my original one to avoid error -->
+            <label class="form-label">Product Category: {{ form.category }}</label>
+            
             <div class="form-group">
                 <label class="form-label">Title</label>
-                <input class="form-control" autofocus type="text" name="product_title" placeholder="Your product name">
+                <input class="form-control" autofocus type="text" name="title" placeholder="Your product name">
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Price</label>
-                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Starting Bid">
+                <label class="form-label">Price $ <b>(Number only)</b></label>
+                <input type="number" class="form-control" name="price" id="exampleFormControlInput1" placeholder="Starting Bid">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Describe your product HERE"></textarea>
+                <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3" placeholder="Describe your product HERE"></textarea>
             </div>
     
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload your Image here</label>
-                <input class="form-control" type="file" id="formFile">
-            </div>
-    
-            <label class="form-label">Product Category</label>
-                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-            <datalist id="datalistOptions">
-                <option value="Electronics">
-                <option value="Home">
-                <option value="Fashion">
-                <option value="Toys">
-                <option value="Other">
-            </datalist>    
+                <input class="form-control" name="image" type="file" id="formFile">
+            </div> 
 
             <div style="padding-top: 10px;">
-                <input class="btn btn-primary" type="submit" value="Save">
+                <input class="btn btn-primary" type="submit" value="Create listing">
             </div>
             
             <!-- {{ form.as_p }}
-            <input type="submit" value="Save"> -->
+            <input class="btn btn-primary" type="submit" value="Create listing"> -->
         </form>
     </div>
 {% endblock %}

@@ -1,67 +1,77 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    {% if listing.status == "Closed" or message == "Auction is closed" %}
-        <ul>  
-            <li> Title: {{ listing }} </li>
-            {% if message == "Auction is closed" %}
-                <li> Auction status: <b>{{ message }}</b> </li>
-            {% elif listing.status == "Closed" %}
-                <li> Auction status: <b>{{ listing.status }}</b> </li>
-            {% endif %}
-            <li> Winner: {{ bid.user }} </li>
+    <h2 style="padding-left: 15px;">Product: {{ listing }}</h2>
+    <div class="row">
+        <div class="listing_left">
+            <!-- Listing info section -->
+            <div class="listing_image_box">
+                <!-- If no photo available, pass to avoid error -->
+                {% if listing.image %}
+                    <img src="{{ listing.image.url }}" alt="No Image" class="listing_image_resized">
+                {% else %}
+                    <p>No photo available</p>
+                {% endif %}    
+            </div>
+        </div>
+        
+        <div class="listing_right">
+            <div class="other_listing_info_container">
+                <ul>  
+                    <li>Creator: {{ listing.user.username }}</li>
+                    <li>Category: {{ listing.category }}</li>
+                    <li>Description: {{ listing.description }}</li>
+                    <li><b>Current Bid ($): {{ listing.price }}</b></li>
+                </ul>
+            </div>
+    
+            <div class="listing_buttons">
+                <form method="post" action="{% url 'listing' listing.id %}">
+                    {% csrf_token %}
+                    <button type="submit" name="close_auction">Close Auction</button>
+                </form>
+        
+                <form method="post" action="{% url 'watchlist' %}">
+                    {% csrf_token %}
+                    <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
+                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                    <button type="submit" name="add_button">Add to watchlist</button>
+                </form>
+        
+                <form method="post" action="{% url 'bid' %}">
+                    {% csrf_token %}
+                    <label for="bid">Your Bid:</label><br>   
+                    <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
+                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                    <button type="submit" name="bid_price_submit">Bid now</button>
+                </form> 
+            </div>
+    
+            <div class="listing_message">
+                {% if listing.status == "Closed" or message == "Auction is closed" %}   
+                <ul>  
+                    {% if message == "Auction is closed" %}
+                        <li> Auction status: <b>{{ message }}</b> </li>
+                    {% elif listing.status == "Closed" %}
+                        <li> Auction status: <b>{{ listing.status }}</b> </li>
+                    {% endif %}
+                    <li> Winner: {{ bid.user }} </li>
+                    <li>Creator: {{ listing.user.username }}</li>
+                    <li>Category: {{ listing.category }}</li>
+                    <li>Description: {{ listing.description }}</li>
+                    <li><b>Current Bid ($): {{ listing.price }}</b></li>
+                    
+                </ul>
+                <!-- {% elif message == "Only creator can close this auction!" %} -->
+                {% else %}
+                    <h2>{{ message }}</h2>
+                {% endif %} 
+            </div>
+        </div>       
+    </div>
 
-            <!-- If no photo available, pass to avoid error -->
-            {% if listing.image %}
-                <li><img src="{{ listing.image.url }}" alt="No Image" style="max-width: 200px;"></li>
-            {% else %}
-                <li> No photo available</li>
-            {% endif %}    
-            <li>Creator: {{ listing.user.username }}</li>
-            <li>Category: {{ listing.category }}</li>
-            <li>Description: {{ listing.description }}</li>
-            <li><b>Current Bid ($): {{ listing.price }}</b></li>
-            
-        </ul>
-    {% elif message == "Only creator can close this auction!" %}
-        <h2>{{ message }}</h2>
-        <button><a href="{% url 'listing' listing.id %}"> Previous page </a></button>
-    {% else %}
-        <form method="post" action="{% url 'listing' listing.id %}">
-            {% csrf_token %}
-            <button type="submit" name="close_auction">Close Auction</button>
-        </form>
-
-        <form method="post" action="{% url 'watchlist' %}">
-            {% csrf_token %}
-            <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
-            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-            <button type="submit" name="add_button">Add to watchlist</button>
-        </form>
-
-        <form method="post" action="{% url 'bid' %}">
-            {% csrf_token %}
-            <label for="bid">Your Bid:</label><br>   
-            <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
-            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-            <button type="submit" name="bid_price_submit">Bid now</button>
-        </form>
-
-        <ul>
-            <!-- If no photo available, pass to avoid error -->
-            {% if listing.image %}
-                <img src="{{ listing.image.url }}" alt="No Image" style="max-width: 200px;">
-            {% else %}
-                <li> No photo available</li>
-            {% endif %}
-            <li>Title: {{ listing }}</li>
-            <li> Auction status: <b>{{ listing.status }}</b> </li>
-            <li>Creator: {{ listing.user.username }}</li>
-            <li>Category: {{ listing.category }}</li>
-            <li>Description: {{ listing.description }}</li>
-            <li><b>Current Bid ($): {{ listing.price }}</b></li>
-        </ul>
-
+    <!-- Comment section -->
+    <div class="comment_container">
         <h2>Comments</h2>
         <form method="post" action="{% url 'listing' listing.id %}">
             {% csrf_token %}
@@ -76,6 +86,7 @@
             </ul>
             {% endfor %}
         </div>
-    {% endif %} 
-
+    </div>
+    
+    
 {% endblock %}
