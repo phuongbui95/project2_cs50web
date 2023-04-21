@@ -1,9 +1,8 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2 style="padding-left: 15px;">Product: {{ listing }}</h2>
-    <div class="row">
-        <div class="listing_left">
+    <div class="listing_row">
+        <div class="listing_split listing_border">
             <!-- Listing info section -->
             <div class="listing_image_box">
                 <!-- If no photo available, pass to avoid error -->
@@ -15,16 +14,47 @@
             </div>
         </div>
         
-        <div class="listing_right">
+        <div class="listing_split listing_border">
+            <h5>{{ listing }}</h5>
             <div class="other_listing_info_container">
                 <ul>  
                     <li>Creator: {{ listing.user.username }}</li>
                     <li>Category: {{ listing.category }}</li>
-                    <li>Description: {{ listing.description }}</li>
                     <li><b>Current Bid ($): {{ listing.price }}</b></li>
+                    <li>Description: {{ listing.description }}</li>
+                    
                 </ul>
             </div>
     
+            <!-- <div class="listing_message">
+                pass
+            </div> -->
+        </div>
+        
+        <div class="listing_split listing_border">
+            <div class="listing_message">
+                Auction status: <b>{{ listing.status }}</b>
+                {% if listing.status == "Closed" or message == "Auction is closed" %}   
+                <ul>  
+                    {% if message == "Auction is NOW closed" %}
+                        <li> Adjusted status: <b>{{ message }}</b> </li>
+                    {% elif listing.status == "Closed" %}
+                        <li> Auction status: <b>{{ listing.status }}</b> </li>
+                    {% endif %}
+
+                    {% if bid.user %}
+                        <li> Winner: {{ bid.user }} </li>
+                    {% else %}
+                        <li> Winner: None </li>
+                    {% endif %}
+                    
+                </ul>
+                <!-- {% elif message == "Only creator can close this auction!" %} -->
+                {% else %}
+                    <h5>{{ message }}</h5>
+                {% endif %} 
+            </div>
+
             <div class="listing_buttons">
                 <form method="post" action="{% url 'listing' listing.id %}">
                     {% csrf_token %}
@@ -45,46 +75,37 @@
                     <input type="hidden" name="listing_id" value="{{ listing.id }}">
                     <button type="submit" name="bid_price_submit">Bid now</button>
                 </form> 
-            </div>
-    
-            <div class="listing_message">
-                {% if listing.status == "Closed" or message == "Auction is closed" %}   
-                <ul>  
-                    {% if message == "Auction is closed" %}
-                        <li> Auction status: <b>{{ message }}</b> </li>
-                    {% elif listing.status == "Closed" %}
-                        <li> Auction status: <b>{{ listing.status }}</b> </li>
-                    {% endif %}
-                    <li> Winner: {{ bid.user }} </li>
-                    <li>Creator: {{ listing.user.username }}</li>
-                    <li>Category: {{ listing.category }}</li>
-                    <li>Description: {{ listing.description }}</li>
-                    <li><b>Current Bid ($): {{ listing.price }}</b></li>
-                    
-                </ul>
-                <!-- {% elif message == "Only creator can close this auction!" %} -->
-                {% else %}
-                    <h2>{{ message }}</h2>
-                {% endif %} 
-            </div>
-        </div>       
+            </div> 
+
+            <!-- <h5>Products in same category</h5>
+            {% for product in products %}
+            <ul>
+                <li><a href="{% url 'listing' product.id %}"> {{ product }} </a></li>
+            </ul>
+            {% endfor %} -->
+        </div>
     </div>
 
     <!-- Comment section -->
-    <div class="comment_container">
-        <h2>Comments</h2>
-        <form method="post" action="{% url 'listing' listing.id %}">
-            {% csrf_token %}
-            <textarea name="comment" placeholder="Say something..."></textarea>
-            <input type="submit" name="submit_comment">
-        </form>
-
+    <div class="all_comment">
+        <h4>Comments:</h4>
+        <div class="input_comment">
+            <form method="post" action="{% url 'listing' listing.id %}">
+                {% csrf_token %}
+                <textarea name="comment" rows="3" cols="100" placeholder="Share your thought..."></textarea>
+                <input type="submit" name="submit_comment">
+            </form>
+        </div>
         <div>
-            {% for comment in all_comments %}
-            <ul>
-                <li>{{ comment.user }}: {{ comment.content }}</li>
-            </ul>
-            {% endfor %}
+            {% if all_comments %}
+                {% for comment in all_comments %}
+                <ul>
+                    <li>{{ comment.user }}: {{ comment.content }}</li>
+                </ul>
+                {% endfor %}
+            {% else %}
+                <div>What do you think about this product? ^.^</div>
+            {% endif %}
         </div>
     </div>
     

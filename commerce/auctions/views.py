@@ -76,6 +76,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html", {"categories": categories})
 
+# not used
 def category(request):
     categories = Category.objects.all()
     return render(request,"auctions/category.html", {
@@ -94,6 +95,9 @@ def listings_by_cat(request, cat_id):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    # this_category = listing.category
+    # products = Listing.objects.filter(Q(category=this_category) & Q(status="Active")).order_by('?')[:5]
+
     # all comments before new comment is added
     all_comments = Comment.objects.filter(listing=listing)[::-1]
     
@@ -103,7 +107,7 @@ def listing(request, listing_id):
         if "close_auction" in request.POST:
             # creator
             if listing.user == current_user or listing.status=="Closed":
-                message = "Auction is closed"
+                message = "Auction is NOW closed"
                 # Update listing_status to "closed": status = 1
                 Listing.objects.filter(id=listing_id).update(status="Closed")
                 
@@ -121,7 +125,8 @@ def listing(request, listing_id):
                     "message": message,
                     "listing": listing,
                     "bid": winning_bid,
-                    "categories": categories
+                    "categories": categories,
+                    # "products": products
             })
         
         ###-- Comment section --###
@@ -139,7 +144,8 @@ def listing(request, listing_id):
                 return render(request, "auctions/listing.html", {
                     "listing": listing,
                     "all_comments": all_comments,
-                    "categories": categories
+                    "categories": categories,
+                    # "products": products
             })
             else:
                 return HttpResponseRedirect(reverse("login"))
@@ -150,7 +156,8 @@ def listing(request, listing_id):
             return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "all_comments": all_comments,
-                "categories": categories
+                "categories": categories,
+                # "products": products
             })
         else:
             raise Http404("Listing does not exist")

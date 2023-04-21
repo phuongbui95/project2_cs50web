@@ -6,7 +6,6 @@ class CreateListingForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(),
                                       initial=Category.objects.get(category_name='Other')
                                       )
-                                        
     class Meta:
         model = Listing
         fields = ['category', 'title', 'description', 'price', 'image']
