@@ -15,7 +15,7 @@ class WatchlistAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing")
 
 class BidAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "listing")
+    list_display = ("id", "user", "listing", "leading_bid")
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing", "content")

@@ -244,37 +244,44 @@ def bid(request):
         listing_id = request.POST['listing_id']
         listing_posted = Listing.objects.get(pk=listing_id)
         listing_creator = listing_posted.user
-
+        is_creator = current_user == listing_creator
+        
         # Listing's creator cannot bid
-        if current_user == listing_creator:
+        if is_creator:
             message = 'Cannot bid your own listing!'
         #Compare newly posted bid to current bid of listing
         elif int(bid_price) >= listing_posted.price:         
-        # If posted Bid is existing, do not save
+            # If posted Bid of current_user is NOT existing, save
             if not Bid.objects.filter(user=request.user, listing=listing_posted):
                 message = f"Bid {bid_price} is accepted."
                 # Create a new object in Bid Model
-                bid_item = Bid(user=request.user, listing=listing_posted)
-                bid_item.save() #save to database's model
+                bid_item = Bid(user=request.user, listing=listing_posted, leading_bid=bid_price).save()
+                # bid_item.save() #save to Bid model
+                # Update price of Listing item in Listing model
+                Listing.objects.filter(id=listing_id).update(price=bid_price)
             elif Bid.objects.filter(user=request.user, listing=listing_posted) and int(bid_price) == listing_posted.price:
                 message = f"Bid is already set."
             else:
                 message = f"Changed your bid to {bid_price}."
+                # Create a new object in Bid Model
+                bid_item = Bid(user=request.user, listing=listing_posted, leading_bid=bid_price).save()
+                # Update price of Listing item in Listing model
+                Listing.objects.filter(id=listing_id).update(price=bid_price)
 
-            # Update price of Listing item
-            Listing.objects.filter(id=listing_id).update(price=bid_price)
-            # update_listing_price.save()
         else:
             message = "Rejected. Bid higher!"
 
         # call out all existing bidded listings of this user
         existing_bid_listings = Bid.objects.all()[::-1]
+        # all_bidders = Bid.objects.values("")
+        # return HttpResponse(all_bidders)
 
         # response to end-user
         return render(request, "auctions/bid.html", {
             "message": message,
             "listing_posted": listing_posted,
             "existing_bid_listings": existing_bid_listings,
-            "categories": categories
+            "categories": categories,
+            "is_creator": is_creator
         })
      

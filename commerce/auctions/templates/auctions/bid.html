@@ -28,23 +28,30 @@
                         <button type="submit" name="bid_price_submit">Bid now</button>
                     </form>
 
-                    <p style="padding-top: 10px;"><b>{{ message }}</b><br>If your bid is accepted, look right =></p>
+                    <p style="padding-top: 10px;"><b>{{ message }}</b></p>
                 </div>
             </div>
             
         </div>
         
         <div class="split">
-            <h5>Your accepted bids</h5>
+            <h5>Your observing bids</h5>
             <div class="right item_container">
+                
                 {% for bid_listing in existing_bid_listings %}
                     <ul>
+                        <!-- listing info -->
                         <li><a href="{% url 'listing' bid_listing.listing.id %}">{{ bid_listing.listing }}</a></li>
-                        <li> Auction status: <b>{{ bid_listing.listing.status }}</b> </li>
+                        <li>Auction status: <b>{{ bid_listing.listing.status }}</b> </li>
                         <li>Creator: {{ bid_listing.listing.user }} </li>
-                        <li>Current Price: {{ bid_listing.listing.price }} </li>
+                        <!-- bid info -->
+                        <li>Bidder: {{ bid_listing.user }} </li>
+                        <li>Bid id: {{ bid_listing.id }} </li>
+                        <li>Leading bid: {{ bid_listing.leading_bid }} </li>
+                        
                     </ul>
                 {% endfor %}
+                
             </div>
             
             
@@ -55,11 +62,3 @@
 
 
 {% endblock %}
-
-<!-- {% for listing in listings %}
-    <ul>
-        <li>Listing ID: {{ listing.id }} </li>
-        <li>Title: {{ listing.title }} </li>
-        <li><b>Current Bid: {{ listing.bid_price }}</b></li>
-    </ul>
-{% endfor %} -->
