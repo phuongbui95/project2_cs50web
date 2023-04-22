@@ -24,21 +24,19 @@
 
         <div class="split">
             <h5>Ready to Bid:</h5>
-            <div class="right">
+            <div class="right item_container">
                 {% for bid_listing in bid_listings %}
-                <div class="item_container">
-                    <ul>
-                        <li><a href="{% url 'listing' bid_listing.listing.id %}">{{ bid_listing.listing }}</a></li>
-                        <li>Creator: {{ bid_listing.listing.user }}</li>
-                        <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
-                        <form method="post" action="{% url 'watchlist' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
-                            <button type="submit" name="remove_button">Remove item</button>
-                        </form>
-                    </ul> 
-                </div> 
-            {% endfor %}
+                <ul>
+                    <li><a href="{% url 'listing' bid_listing.listing.id %}">{{ bid_listing.listing }}</a></li>
+                    <li>Creator: {{ bid_listing.listing.user }}</li>
+                    <li><b>Current Bid ($): {{ bid_listing.listing.price }}</b></li>
+                    <form method="post" action="{% url 'watchlist' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_listing_id" value="{{ bid_listing.listing.id }}">
+                        <button type="submit" name="remove_button">Remove item</button>
+                    </form>
+                </ul> 
+                {% endfor %}
             </div>
         </div>
     </div>

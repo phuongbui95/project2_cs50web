@@ -63,14 +63,13 @@
         
                 <form method="post" action="{% url 'watchlist' %}">
                     {% csrf_token %}
-                    <!-- <input type="hidden" name="page_url" value="{{ request.build_absolute_uri }}"> -->
                     <input type="hidden" name="listing_id" value="{{ listing.id }}">
                     <button type="submit" name="add_button">Add to watchlist</button>
-                </form>
-        
+                </form>    
+                
+                
                 <form method="post" action="{% url 'bid' %}">
                     {% csrf_token %}
-                    <label for="bid">Your Bid:</label><br>   
                     <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
                     <input type="hidden" name="listing_id" value="{{ listing.id }}">
                     <button type="submit" name="bid_price_submit">Bid now</button>

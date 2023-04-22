@@ -1,28 +1,57 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h1>You're working Bid:</h1>
-    <ul>
-        <li>
-            <a href="{% url 'listing' listing_posted.id %}">Listing id: {{ listing_posted.id }}</a>
-        </li>
-        <li>Title: {{ listing_posted.title }}</li>
-        <li>Current Price: {{ listing_posted.price }}</li>
-    </ul>
-    <div> {{ message }}</div>
-    
-    <h1>Your existing bids</h1>
-    <div>
-        {% for bid_listing in existing_bid_listings %}
-            <ul>
-                <li><a href="{% url 'listing' bid_listing.listing.id %}">Listing id: {{ bid_listing.listing.id }}</a></li>
-                <li> Auction status: <b>{{ bid_listing.listing.status }}</b> </li>
-                <li>Title: {{ bid_listing.listing.title }} </li>
-                <li>Creator: {{ bid_listing.listing.user }} </li>
-                <li>Price: {{ bid_listing.listing.price }} </li>
-            </ul>
-        {% endfor %}
+    <div class="section">
+        <h2 style="display:inline-block;">Bid &nbsp;</h2><h8>(To visit listing page, click on hyperlink)</h8>
     </div>
+
+    <div class="row">
+        <div class="split">
+            <h5>You're working Bid:</h5>
+            <div class="left">
+                <div class="bid_container">
+                    <ul>
+                        <li>
+                            <a href="{% url 'listing' listing_posted.id %}">{{ listing_posted }}</a>
+                        </li>
+                        <li>Auction status: {{ listing_posted.status }}</li>
+                        <li>Creator: {{ listing_posted.user}}</li>
+                        <li>Current Price: {{ listing_posted.price }}</li>
+                    </ul>
+                </div>
+                
+                <div> 
+                    <form method="post" action="{% url 'bid' %}">
+                        {% csrf_token %}
+                        <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
+                        <input type="hidden" name="listing_id" value="{{ listing_posted.id }}">
+                        <button type="submit" name="bid_price_submit">Bid now</button>
+                    </form>
+
+                    <p style="padding-top: 10px;"><b>{{ message }}</b><br>If your bid is accepted, look right =></p>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="split">
+            <h5>Your accepted bids</h5>
+            <div class="right item_container">
+                {% for bid_listing in existing_bid_listings %}
+                    <ul>
+                        <li><a href="{% url 'listing' bid_listing.listing.id %}">{{ bid_listing.listing }}</a></li>
+                        <li> Auction status: <b>{{ bid_listing.listing.status }}</b> </li>
+                        <li>Creator: {{ bid_listing.listing.user }} </li>
+                        <li>Current Price: {{ bid_listing.listing.price }} </li>
+                    </ul>
+                {% endfor %}
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    
 
 
 {% endblock %}

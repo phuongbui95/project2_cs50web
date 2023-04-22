@@ -246,18 +246,20 @@ def bid(request):
         elif int(bid_price) >= listing_posted.price:         
         # If posted Bid is existing, do not save
             if not Bid.objects.filter(user=request.user, listing=listing_posted):
-                message = f"Your bid {bid_price} is accepted."
+                message = f"Bid {bid_price} is accepted."
                 # Create a new object in Bid Model
                 bid_item = Bid(user=request.user, listing=listing_posted)
                 bid_item.save() #save to database's model
+            elif Bid.objects.filter(user=request.user, listing=listing_posted) and int(bid_price) == listing_posted.price:
+                message = f"Bid is already set."
             else:
-                message = f"You changed your bid to {bid_price}."
+                message = f"Changed your bid to {bid_price}."
 
             # Update price of Listing item
             Listing.objects.filter(id=listing_id).update(price=bid_price)
             # update_listing_price.save()
         else:
-            message = "Bid higher! Click on 'Listing id' to bid again"
+            message = "Rejected. Bid higher!"
 
         # call out all existing bidded listings of this user
         existing_bid_listings = Bid.objects.all()[::-1]

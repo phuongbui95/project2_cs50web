@@ -69,6 +69,7 @@ body {
     grid-template-columns: repeat(2, 1fr); /* 2 columns per row */
     /* make each item sit side by side */
     gap: 10px;
+    width:550px;
 }
 
 .right button {
@@ -119,14 +120,20 @@ body {
 }
 
 .listing_image_resized {
-    width: 300;
     /* same width as image_box */
-    /* height: auto; */
+    width: 400px;
     height: 300px;
-    align-items: center;
+    /* height: auto; */
     
 }
 
 .all_comment {
     padding: 15px;
+}
+
+/* bid.html */
+.bid_container {
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 250px;
 }
