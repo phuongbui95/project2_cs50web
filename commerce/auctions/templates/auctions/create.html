@@ -10,26 +10,25 @@
             <label class="form-label">Product Category: {{ form.category }}</label>
             
             <div class="form-group">
-                <label class="form-label">Title</label>
                 <input class="form-control" autofocus type="text" name="title" placeholder="Your product name" required>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Price $ <b>(Number only)</b></label>
-                <input type="number" class="form-control" name="price" id="exampleFormControlInput1" placeholder="Starting Bid" required>
+                <!-- <label class="form-label">Price $ <b>(Number only)</b></label> -->
+                <input type="number" class="form-control" name="price" id="exampleFormControlInput1" placeholder="Starting Bid $ (Number Only)" required>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Description <b>(Max length: 200 letters)</b></label>
-                <textarea class="form-control" maxlength="200" name="description" id="exampleFormControlTextarea1" rows="3" placeholder="Describe your product HERE" required></textarea>
+                <!-- <label class="form-label">Description <b>(Max length: 200 letters)</b></label> -->
+                <textarea class="form-control" maxlength="200" name="description" id="exampleFormControlTextarea1" rows="3" placeholder="Product Description" required></textarea>
             </div>
     
             <div class="mb-3">
-                <label for="formFile" class="form-label">Upload your Image here</label>
+                <label for="formFile" class="form-label">Upload Image</label>
                 <input class="form-control" name="image" type="file" id="formFile">
             </div> 
 
-            <div style="padding-top: 10px;">
+            <div>
                 <input class="btn btn-primary" type="submit" value="Create listing">
             </div>
             

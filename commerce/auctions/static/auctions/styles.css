@@ -131,6 +131,9 @@ body {
     padding: 15px;
 }
 
+.add_to_watchlist_button, .bid_button {
+    padding-bottom: 5px;
+}
 /* bid.html */
 .bid_container {
     border: 1px solid black;

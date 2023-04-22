@@ -33,55 +33,53 @@
         
         <div class="listing_split listing_border">
             <div class="listing_message">
-                Auction status: <b>{{ listing.status }}</b>
-                {% if listing.status == "Closed" or message == "Auction is closed" %}   
-                <ul>  
-                    {% if message == "Auction is NOW closed" %}
-                        <li> Adjusted status: <b>{{ message }}</b> </li>
-                    {% elif listing.status == "Closed" %}
-                        <li> Auction status: <b>{{ listing.status }}</b> </li>
-                    {% endif %}
-
+                {% if message == "Auction is CLOSED" %}
+                    <b>{{ message }}</b><br>
                     {% if bid.user %}
-                        <li> Winner: {{ bid.user }} </li>
+                        Winner: {{ bid.user }}<br>
                     {% else %}
-                        <li> Winner: None </li>
+                        Winner: None <br>
                     {% endif %}
-                    
-                </ul>
-                <!-- {% elif message == "Only creator can close this auction!" %} -->
+                {% elif listing.status == "Closed" %}
+                    Auction status: <b>{{ listing.status }}</b><br>
+                    {% if bid.user %}
+                        Winner: {{ bid.user }}<br>
+                    {% else %}
+                        Winner: None <br>
+                    {% endif %}
                 {% else %}
-                    <h5>{{ message }}</h5>
-                {% endif %} 
+                    <h5>{{ message }}</h5><br>
+                    <div class="listing_buttons">
+                        <div class="bid_button">
+                            <form method="post" action="{% url 'bid' %}">
+                                {% csrf_token %}
+                                <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
+                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                <button type="submit" name="bid_price_submit">Bid now</button>
+                            </form> 
+                        </div>
+                        
+                        <div class="add_to_watchlist_button">
+                            <form method="post" action="{% url 'watchlist' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                <button type="submit" name="add_button">Add to watchlist</button>
+                            </form>    
+                        </div>
+        
+                        <div class="close_auction_button">
+                            <form method="post" action="{% url 'listing' listing.id %}">
+                                {% csrf_token %}
+                                <button type="submit" name="close_auction">Close Auction</button>
+                            </form>
+                        </div>   
+                    </div> 
+                {% endif %}
+                    
+                
             </div>
 
-            <div class="listing_buttons">
-                <form method="post" action="{% url 'listing' listing.id %}">
-                    {% csrf_token %}
-                    <button type="submit" name="close_auction">Close Auction</button>
-                </form>
-        
-                <form method="post" action="{% url 'watchlist' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                    <button type="submit" name="add_button">Add to watchlist</button>
-                </form>    
-                
-                
-                <form method="post" action="{% url 'bid' %}">
-                    {% csrf_token %}
-                    <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
-                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                    <button type="submit" name="bid_price_submit">Bid now</button>
-                </form> 
-            </div> 
-
-            <!-- <h5>Products in same category</h5>
-            {% for product in products %}
-            <ul>
-                <li><a href="{% url 'listing' product.id %}"> {{ product }} </a></li>
-            </ul>
-            {% endfor %} -->
+            
         </div>
     </div>
 

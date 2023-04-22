@@ -107,12 +107,13 @@ def listing(request, listing_id):
         if "close_auction" in request.POST:
             # creator
             if listing.user == current_user or listing.status=="Closed":
-                message = "Auction is NOW closed"
+                message = "Auction is CLOSED"
                 # Update listing_status to "closed": status = 1
                 Listing.objects.filter(id=listing_id).update(status="Closed")
                 
             # not creator
             else:
+                # return HttpResponse("sth wrong")
                 message = "Only creator can close this auction!"
             
             # find bid winner
@@ -196,6 +197,8 @@ def watchlist(request):
     ###--- 1. Your created listings --- ###
     current_user = request.user
     my_listings = Listing.objects.filter(user=current_user)
+    #Call as global variable of this function
+    message = 'To visit listing page, click on hyperlink of that product'
 
     ###--- 2. Listings to Bid --- ###
     # Add to Watchlist
@@ -207,9 +210,9 @@ def watchlist(request):
 
             # create new Watchlist object
             if Watchlist.objects.filter(user=request.user, listing=listing_posted): #.exists():
-                return HttpResponse('Listing already exists')
+                message = "Listing already exists!"
             elif current_user == listing_creator:
-                return HttpResponse('You are the creator of this listing!')
+                message = f"You are the creator of product '{listing_posted}'"
             else:
                 # Create a new object in Model
                 watchlist_item = Watchlist(user=request.user, listing=listing_posted)
@@ -219,6 +222,8 @@ def watchlist(request):
             item_listing_id_selected = request.POST['item_listing_id']
             # filter the listing_id in User's Watchlist model
             Watchlist.objects.filter(user=request.user, listing=item_listing_id_selected).delete()
+            removed_listing = Listing.objects.get(pk=item_listing_id_selected)
+            message = f"You removed product '{removed_listing}' from your watchlist"
 
 
     # Display all items in Watchlist
@@ -226,7 +231,8 @@ def watchlist(request):
     return render(request, 'auctions/watchlist.html', {
         'my_listings': my_listings,
         'bid_listings': bid_listings,
-        "categories": categories
+        "categories": categories,
+        "message": message
     })
 
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
