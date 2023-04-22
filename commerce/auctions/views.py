@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Max
 
 from .models import User, Listing, Comment, Category, Bid , Watchlist
 from .forms import CreateListingForm
@@ -273,8 +273,21 @@ def bid(request):
 
         # call out all existing bidded listings of this user
         existing_bid_listings = Bid.objects.all()[::-1]
-        # all_bidders = Bid.objects.values("")
-        # return HttpResponse(all_bidders)
+        current_user_bids = Bid.objects.filter(user=current_user)
+        current_user_bids_listings = list()
+        for current_user_bid in current_user_bids:
+            current_user_bids_listings.append(current_user_bid.listing)
+        #remove duplicated values in above list
+        current_user_bids_listings = list(set(current_user_bids_listings))
+        
+        # Get all bids grouped by listing and annotated with max leading_bid
+        # max_bids = Bid.objects.values('listing').annotate(max_bid=Max('leading_bid'))
+
+
+        # Debug
+        findBug = current_user_bids_listings
+        return HttpResponse(findBug)
+        
 
         # response to end-user
         return render(request, "auctions/bid.html", {
