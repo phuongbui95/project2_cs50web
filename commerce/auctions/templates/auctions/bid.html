@@ -5,9 +5,8 @@
         <h2 style="display:inline-block;">Bid &nbsp;</h2><h8>(To visit listing page, click on hyperlink)</h8>
     </div>
 
-    <div class="row">
+    <div class="row" style="padding-top: 10px;">
         <div class="split">
-            <h5>You're working Bid:</h5>
             <div class="left">
                 <div class="bid_container">
                     <ul>
@@ -27,34 +26,22 @@
                         <input type="hidden" name="listing_id" value="{{ listing_posted.id }}">
                         <button type="submit" name="bid_price_submit">Bid now</button>
                     </form>
-
                     <p style="padding-top: 10px;"><b>{{ message }}</b></p>
+                    
                 </div>
             </div>
             
         </div>
         
         <div class="split">
-            <h5>Your observing bids</h5>
-            <div class="right item_container">
-                
-                {% for bid_listing in existing_bid_listings %}
-                    <ul>
-                        <!-- listing info -->
-                        <li><a href="{% url 'listing' bid_listing.listing.id %}">{{ bid_listing.listing }}</a></li>
-                        <li>Auction status: <b>{{ bid_listing.listing.status }}</b> </li>
-                        <li>Creator: {{ bid_listing.listing.user }} </li>
-                        <!-- bid info -->
-                        <li>Bidder: {{ bid_listing.user }} </li>
-                        <li>Bid id: {{ bid_listing.id }} </li>
-                        <li>Leading bid: {{ bid_listing.leading_bid }} </li>
-                        
-                    </ul>
-                {% endfor %}
-                
-            </div>
-            
-            
+            <div>
+                <h5>Current auction</h5>  
+                {% if leading_bid == current_user_latest_bid %}
+                    You are now the bid leader.
+                {% else %}
+                    <b>{{ leading_bid.user}}</b> is now the bid leader.
+                {% endif %}
+            </div>         
         </div>
         
     </div>

@@ -94,16 +94,18 @@ def listings_by_cat(request, cat_id):
     })
 
 def listing(request, listing_id):
+    current_user = request.user
     listing = Listing.objects.get(pk=listing_id)
     # this_category = listing.category
     # products = Listing.objects.filter(Q(category=this_category) & Q(status="Active")).order_by('?')[:5]
+    
+    leading_bid = Bid.objects.filter(listing=listing).last()
 
     # all comments before new comment is added
     all_comments = Comment.objects.filter(listing=listing)[::-1]
     
     if request.method == "POST":
-        current_user = request.user
-        # Close Auction
+        ##--- Close Auction
         if "close_auction" in request.POST:
             # creator
             if listing.user == current_user or listing.status=="Closed":
@@ -115,21 +117,60 @@ def listing(request, listing_id):
             else:
                 # return HttpResponse("sth wrong")
                 message = "Only creator can close this auction!"
-            
-            # find bid winner
-            # winning_bid = Bid.objects.get(listing=listing)
-            winning_bid = Bid.objects.filter(listing=listing).first()
 
             #return messages
 
             return render(request, "auctions/listing.html", {
                     "message": message,
                     "listing": listing,
-                    "bid": winning_bid,
-                    "categories": categories,
-                    # "products": products
+                    "leading_bid": leading_bid,
+                    "categories": categories
             })
         
+        ###-- Bid section --###
+        if "bid_price_submit" in request.POST:
+            # Only users who signed in can comment
+            if current_user.is_authenticated:
+                #Take posted bid_price and listing_id
+                bid_price = request.POST['bid_price']
+                listing_creator = listing.user
+                is_creator = current_user == listing_creator
+                
+                # Listing's creator cannot bid
+                if is_creator:
+                    message = 'Cannot bid your own listing!'
+                #Compare newly posted bid to current bid of listing
+                elif int(bid_price) >= listing.price:         
+                    # If posted Bid of current_user is NOT existing, save
+                    if not Bid.objects.filter(user=request.user, listing=listing):
+                        message = "Your bid is accepted."
+                        # Create a new object in Bid Model
+                        Bid(user=request.user, listing=listing, leading_bid=bid_price).save()
+                        # Update price of Listing item in Listing model
+                        Listing.objects.filter(id=listing_id).update(price=bid_price)
+                    elif Bid.objects.filter(user=request.user, listing=listing) and int(bid_price) == listing.price:
+                        message = "Bid is already set."
+                    else:
+                        message = "Your Adjusted bid is accepted."
+                        # Create a new object in Bid Model
+                        Bid(user=request.user, listing=listing, leading_bid=bid_price).save()
+                        # Update price of Listing item in Listing model
+                        Listing.objects.filter(id=listing_id).update(price=bid_price)
+
+                else:
+                    message = "Rejected. Bid higher!"
+                return render(request, "auctions/listing.html", {
+                    "message": message,
+                    "listing": listing,
+                    "all_comments": all_comments,
+                    "categories": categories,
+                    "leading_bid": leading_bid,
+                    "bid_price": bid_price
+                
+            })
+            else:
+                return HttpResponseRedirect(reverse("login"))
+            
         ###-- Comment section --###
         if "comment" in request.POST:
             # Only users who signed in can comment
@@ -146,7 +187,7 @@ def listing(request, listing_id):
                     "listing": listing,
                     "all_comments": all_comments,
                     "categories": categories,
-                    # "products": products
+                    "leading_bid": leading_bid
             })
             else:
                 return HttpResponseRedirect(reverse("login"))
@@ -157,8 +198,9 @@ def listing(request, listing_id):
             return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "all_comments": all_comments,
+                "leading_bid": leading_bid,
                 "categories": categories,
-                # "products": products
+               
             })
         else:
             raise Http404("Listing does not exist")
@@ -255,8 +297,7 @@ def bid(request):
             if not Bid.objects.filter(user=request.user, listing=listing_posted):
                 message = f"Bid {bid_price} is accepted."
                 # Create a new object in Bid Model
-                bid_item = Bid(user=request.user, listing=listing_posted, leading_bid=bid_price).save()
-                # bid_item.save() #save to Bid model
+                Bid(user=request.user, listing=listing_posted, leading_bid=bid_price).save()
                 # Update price of Listing item in Listing model
                 Listing.objects.filter(id=listing_id).update(price=bid_price)
             elif Bid.objects.filter(user=request.user, listing=listing_posted) and int(bid_price) == listing_posted.price:
@@ -264,37 +305,32 @@ def bid(request):
             else:
                 message = f"Changed your bid to {bid_price}."
                 # Create a new object in Bid Model
-                bid_item = Bid(user=request.user, listing=listing_posted, leading_bid=bid_price).save()
+                Bid(user=request.user, listing=listing_posted, leading_bid=bid_price).save()
                 # Update price of Listing item in Listing model
                 Listing.objects.filter(id=listing_id).update(price=bid_price)
 
         else:
             message = "Rejected. Bid higher!"
 
-        # call out all existing bidded listings of this user
-        existing_bid_listings = Bid.objects.all()[::-1]
-        current_user_bids = Bid.objects.filter(user=current_user)
-        current_user_bids_listings = list()
-        for current_user_bid in current_user_bids:
-            current_user_bids_listings.append(current_user_bid.listing)
-        #remove duplicated values in above list
-        current_user_bids_listings = list(set(current_user_bids_listings))
-        
+        #latest bid on this listing of current user
+        current_user_latest_bid = Bid.objects.filter(listing=listing_posted, user=current_user).last()
+        #latest bid on this listing of all users
+        leading_bid = Bid.objects.filter(listing=listing_posted).last()
+
         # Get all bids grouped by listing and annotated with max leading_bid
         # max_bids = Bid.objects.values('listing').annotate(max_bid=Max('leading_bid'))
 
-
         # Debug
-        findBug = current_user_bids_listings
-        return HttpResponse(findBug)
+        # findBug = [current_user_latest_bid, leading_bid]
+        # return HttpResponse(findBug)
         
-
         # response to end-user
         return render(request, "auctions/bid.html", {
             "message": message,
             "listing_posted": listing_posted,
-            "existing_bid_listings": existing_bid_listings,
-            "categories": categories,
-            "is_creator": is_creator
+            "current_user_latest_bid": current_user_latest_bid,
+            "leading_bid": leading_bid,
+            "categories": categories
+            
         })
      

@@ -18,9 +18,30 @@
             <h5>{{ listing }}</h5>
             <div class="other_listing_info_container">
                 <ul>  
-                    <li>Creator: {{ listing.user.username }}</li>
+                    {% if message == "Auction is CLOSED"  %}
+                        <li>Auction status: <b>Closed</b></li>
+                        {% if leading_bid.user %}
+                            <b>Bid Winner</b>: {{ leading_bid.user }}<br>
+                        {% else %}
+                            <b>Bid Winner</b>: None <br>
+                        {% endif %}
+                    {% else %}
+                        <li>Auction status: <b>{{ listing.status }}</b></li>
+                        <li>
+                            {% if leading_bid.user %}
+                                <b>Bid Leader</b>: {{ leading_bid.user }}<br>
+                            {% else %}
+                                <b>Bid Leader</b>: None <br>
+                            {% endif %}                    
+                        </li>
+                    {% endif %}
+                    <li>Creator: {{ listing.user }}</li>
                     <li>Category: {{ listing.category }}</li>
-                    <li><b>Current Bid ($): {{ listing.price }}</b></li>
+                    {% if message == "Your Adjusted bid is accepted." or message == "Your bid is accepted." %}
+                        <li><b>New Bid ($): {{ bid_price }}</b></li>
+                    {% else %}
+                        <li><b>Current Bid ($): {{ listing.price }}</b></li>
+                    {% endif %}
                     <li>Description: {{ listing.description }}</li>
                     
                 </ul>
@@ -33,49 +54,32 @@
         
         <div class="listing_split listing_border">
             <div class="listing_message">
-                {% if message == "Auction is CLOSED" %}
-                    <b>{{ message }}</b><br>
-                    {% if bid.user %}
-                        Winner: {{ bid.user }}<br>
-                    {% else %}
-                        Winner: None <br>
-                    {% endif %}
-                {% elif listing.status == "Closed" %}
-                    Auction status: <b>{{ listing.status }}</b><br>
-                    {% if bid.user %}
-                        Winner: {{ bid.user }}<br>
-                    {% else %}
-                        Winner: None <br>
-                    {% endif %}
-                {% else %}
-                    <h5>{{ message }}</h5><br>
-                    <div class="listing_buttons">
-                        <div class="bid_button">
-                            <form method="post" action="{% url 'bid' %}">
-                                {% csrf_token %}
-                                <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
-                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                <button type="submit" name="bid_price_submit">Bid now</button>
-                            </form> 
-                        </div>
-                        
-                        <div class="add_to_watchlist_button">
-                            <form method="post" action="{% url 'watchlist' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                <button type="submit" name="add_button">Add to watchlist</button>
-                            </form>    
-                        </div>
-        
-                        <div class="close_auction_button">
-                            <form method="post" action="{% url 'listing' listing.id %}">
-                                {% csrf_token %}
-                                <button type="submit" name="close_auction">Close Auction</button>
-                            </form>
-                        </div>   
-                    </div> 
-                {% endif %}
+                <h5>{{ message }}</h5><br>
+                <div class="listing_buttons">
+                    <div class="bid_button">
+                        <form method="post" action="{% url 'listing' listing.id %}">
+                            {% csrf_token %}
+                            <input type="number" id="bid_price" name="bid_price" placeholder="input your bid">
+                            <!-- <input type="hidden" name="listing_id" value="{{ listing.id }}"> -->
+                            <button type="submit" name="bid_price_submit">Bid now</button>
+                        </form> 
+                    </div>
                     
+                    <div class="add_to_watchlist_button">
+                        <form method="post" action="{% url 'watchlist' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                            <button type="submit" name="add_button">Add to watchlist</button>
+                        </form>    
+                    </div>
+    
+                    <div class="close_auction_button">
+                        <form method="post" action="{% url 'listing' listing.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="close_auction">Close Auction</button>
+                        </form>
+                    </div>   
+                </div>    
                 
             </div>
 
