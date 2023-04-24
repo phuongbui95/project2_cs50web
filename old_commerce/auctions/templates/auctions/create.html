@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div style="padding-left: 15px;">
+        <h2>Create Listing</h2>
+        <!-- enctype="multipart/form-data": The enctype attribute specifies how the form-data should be encoded when submitting it to the server. -->
+        <form method="post" action="{% url 'create' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- I won't use datalist of Boothstrap but my original one to avoid error -->
+            <label class="form-label">Product Category: {{ form.category }}</label>
+            
+            <div class="form-group">
+                <input class="form-control" autofocus type="text" name="title" placeholder="Your product name" required>
+            </div>
+
+            <div class="mb-3">
+                <!-- <label class="form-label">Price $ <b>(Number only)</b></label> -->
+                <input type="number" class="form-control" name="price" id="exampleFormControlInput1" placeholder="Starting Bid $ (Number Only)" required>
+            </div>
+
+            <div class="mb-3">
+                <!-- <label class="form-label">Description <b>(Max length: 200 letters)</b></label> -->
+                <textarea class="form-control" maxlength="200" name="description" id="exampleFormControlTextarea1" rows="3" placeholder="Product Description" required></textarea>
+            </div>
+    
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Upload Image</label>
+                <input class="form-control" name="image" type="file" id="formFile">
+            </div> 
+
+            <div>
+                <input class="btn btn-primary" type="submit" value="Create listing">
+            </div>
+            
+            <!-- {{ form.as_p }}
+            <input class="btn btn-primary" type="submit" value="Create listing"> -->
+        </form>
+    </div>
+{% endblock %}
