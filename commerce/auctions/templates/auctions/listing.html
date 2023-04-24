@@ -31,8 +31,7 @@
                         <li>Auction status: <b>{{ listing.status }}</b></li>
                         <!-- current bid and bid leader at the same time-->
                         {% if message == "Your Adjusted bid is accepted." or message == "Your bid is accepted." %}
-                            <!-- <b>New Bid Leader</b>: {{ request.user }}<br> -->
-                            test
+                            <b>New Bid Leader</b>: {{ request.user }}<br>
                             <b>New Bid ($): {{ bid_price }}</b>
                         {% else %}
                             {% if leading_bid.user %}
@@ -50,10 +49,6 @@
                     
                 </ul>
             </div>
-    
-            <!-- <div class="listing_message">
-                pass
-            </div> -->
         </div>
         
         <div class="listing_split listing_border">

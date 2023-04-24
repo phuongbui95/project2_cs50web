@@ -52,7 +52,7 @@ class Bid(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    leading_bid = models.BigIntegerField(null=True, blank=True)
+    leading_bid = models.BigIntegerField(default=0)
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)

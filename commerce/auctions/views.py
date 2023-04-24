@@ -96,11 +96,6 @@ def listings_by_cat(request, cat_id):
 def listing(request, listing_id):
     current_user = request.user
     listing = Listing.objects.get(pk=listing_id)
-    # this_category = listing.category
-    # products = Listing.objects.filter(Q(category=this_category) & Q(status="Active")).order_by('?')[:5]
-    
-    # leading_bid = Bid.objects.filter(listing=listing).last()
-    leading_bid = Bid.objects.filter(listing=listing).latest("leading_bid")
 
     # all comments before new comment is added
     all_comments = Comment.objects.filter(listing=listing)[::-1]
@@ -130,7 +125,9 @@ def listing(request, listing_id):
         
         ###-- Bid section --###
         if "bid_price_submit" in request.POST:
-            #call out new_bid_leader for global use
+            # error if leading_bid = null
+            leading_bid = Bid.objects.filter(listing=listing).last()
+            
             # Only users who signed in can comment
             if current_user.is_authenticated:
                 #Take posted bid_price and listing_id
@@ -189,7 +186,7 @@ def listing(request, listing_id):
                     "listing": listing,
                     "all_comments": all_comments,
                     "categories": categories,
-                    "leading_bid": leading_bid
+                    # "leading_bid": leading_bid
             })
             else:
                 return HttpResponseRedirect(reverse("login"))
@@ -200,7 +197,7 @@ def listing(request, listing_id):
             return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "all_comments": all_comments,
-                "leading_bid": leading_bid,
+                # "leading_bid": leading_bid,
                 "categories": categories,
                
             })

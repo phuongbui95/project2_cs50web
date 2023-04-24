@@ -11,23 +11,23 @@ class CategoryAdmin(admin.ModelAdmin):
 class ListingAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "category", "title", "description", "price", "status","image")
     list_filter = ("user","category","status")
-    # search_fields = ["user__username","title","status"]
+    search_fields = ["user__username","title","status"]
 
 class WatchlistAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing")
-    # search_fields = ["user__username","listing__title"]
+    search_fields = ["user__username","listing__title"]
 
 class BidAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing", "leading_bid")
     list_filter = ("listing",)
     search_fields = ["user__username","listing__title"]
     # add a hyphen before leading_bid, this will order bids by leading_bid in descending order.
-    # ordering = ("listing__title","-leading_bid",) 
+    ordering = ("listing__title","-leading_bid",) 
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "listing", "content")
     list_filter = ("user","listing")
-    # search_fields = ["user__username","listing__title","content"] #do not need to use __ in the same model
+    search_fields = ["user__username","listing__title","content"] #do not need to use __ in the same model
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Category, CategoryAdmin)
