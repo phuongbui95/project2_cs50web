@@ -108,7 +108,7 @@ def listing(request, listing_id):
                 message = "Only creator can close this auction!"
 
             #return messages
-
+            leading_bid = Bid.objects.filter(listing=listing).last()
             return render(request, "auctions/listing.html", {
                     "message": message,
                     "listing": listing,
