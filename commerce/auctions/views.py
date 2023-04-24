@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Max
+from django.db.models import Q
 
 from .models import User, Listing, Comment, Category, Bid , Watchlist
 from .forms import CreateListingForm
@@ -125,7 +125,6 @@ def listing(request, listing_id):
         
         ###-- Bid section --###
         if "bid_price_submit" in request.POST:
-            # error if leading_bid = null
             leading_bid = Bid.objects.filter(listing=listing).last()
             
             # Only users who signed in can comment
@@ -186,7 +185,6 @@ def listing(request, listing_id):
                     "listing": listing,
                     "all_comments": all_comments,
                     "categories": categories,
-                    # "leading_bid": leading_bid
             })
             else:
                 return HttpResponseRedirect(reverse("login"))
@@ -197,7 +195,6 @@ def listing(request, listing_id):
             return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "all_comments": all_comments,
-                # "leading_bid": leading_bid,
                 "categories": categories,
                
             })
