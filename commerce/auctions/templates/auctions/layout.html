@@ -30,11 +30,10 @@
                         <!-- <a class="nav-link" href="{% url 'category' %}">Categories</a> -->
                         <a class="nav-link" href="">Categories</a>
                         <div class="dropdown-content">
-                            <ul>
-                                {% for category in categories %}
-                                    <li><a href="{% url 'listings_by_cat' category.id %}" >{{ category }}</a></li>
-                                {% endfor %}
-                            </ul>
+                            {% for category in categories %}
+                                <a href="{% url 'listings_by_cat' category.id %}">{{ category }}</a>
+                            {% endfor %}
+                            
                         </div>
                     </div>
                 </li>

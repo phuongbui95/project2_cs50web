@@ -20,28 +20,32 @@
                 <ul>  
                     {% if message == "Auction is CLOSED"  %}
                         <li>Auction status: <b>Closed</b></li>
+                        <!-- bid winner -->
                         {% if leading_bid.user %}
                             <b>Bid Winner</b>: {{ leading_bid.user }}<br>
                         {% else %}
                             <b>Bid Winner</b>: None <br>
-                        {% endif %}
-                    {% else %}
+                        {% endif %}     
+                        <b>Current Bid ($): {{ listing.price }}</b>
+                    {% else %} <!-- Auction status: Active -->
                         <li>Auction status: <b>{{ listing.status }}</b></li>
-                        <li>
+                        <!-- current bid and bid leader at the same time-->
+                        {% if message == "Your Adjusted bid is accepted." or message == "Your bid is accepted." %}
+                            <!-- <b>New Bid Leader</b>: {{ request.user }}<br> -->
+                            test
+                            <b>New Bid ($): {{ bid_price }}</b>
+                        {% else %}
                             {% if leading_bid.user %}
-                                <b>Bid Leader</b>: {{ leading_bid.user }}<br>
+                                <b>Current Bid Leader</b>: {{ leading_bid.user }}<br>
                             {% else %}
-                                <b>Bid Leader</b>: None <br>
+                                <b>Current Bid Leader</b>: None <br>
                             {% endif %}                    
-                        </li>
+                            <b>Current Bid ($): {{ listing.price }}</b>
+                        {% endif %}
                     {% endif %}
+
                     <li>Creator: {{ listing.user }}</li>
                     <li>Category: {{ listing.category }}</li>
-                    {% if message == "Your Adjusted bid is accepted." or message == "Your bid is accepted." %}
-                        <li><b>New Bid ($): {{ bid_price }}</b></li>
-                    {% else %}
-                        <li><b>Current Bid ($): {{ listing.price }}</b></li>
-                    {% endif %}
                     <li>Description: {{ listing.description }}</li>
                     
                 </ul>

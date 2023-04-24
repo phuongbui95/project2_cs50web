@@ -8,7 +8,9 @@ body {
     top: 0;
     right: 0;
 
-    padding: 10px;
+    padding: 5px;
+    background-color: lightblue;
+    border-radius: 10px;
 }
 
 .section {
@@ -81,12 +83,16 @@ body {
 .dropdown {
     position: relative;
     display: inline-block;
+    
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
     z-index: 1;
+    background-color: lightgray;
+    border-radius: 10px;
+    padding-left: 10px;
 }
 
 .dropdown:hover .dropdown-content {

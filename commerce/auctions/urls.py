@@ -16,7 +16,7 @@ urlpatterns = [
     #require to login
     path("create", views.create, name="create"),
     path("watchlist", views.watchlist, name="watchlist"),
-    path("bid", views.bid, name="bid"),
+    # path("bid", views.bid, name="bid"),
 ]
 
 # Add directory for Media uploading

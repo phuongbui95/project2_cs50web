@@ -99,7 +99,8 @@ def listing(request, listing_id):
     # this_category = listing.category
     # products = Listing.objects.filter(Q(category=this_category) & Q(status="Active")).order_by('?')[:5]
     
-    leading_bid = Bid.objects.filter(listing=listing).last()
+    # leading_bid = Bid.objects.filter(listing=listing).last()
+    leading_bid = Bid.objects.filter(listing=listing).latest("leading_bid")
 
     # all comments before new comment is added
     all_comments = Comment.objects.filter(listing=listing)[::-1]
@@ -129,6 +130,7 @@ def listing(request, listing_id):
         
         ###-- Bid section --###
         if "bid_price_submit" in request.POST:
+            #call out new_bid_leader for global use
             # Only users who signed in can comment
             if current_user.is_authenticated:
                 #Take posted bid_price and listing_id
@@ -223,7 +225,6 @@ def create(request):
             return HttpResponseRedirect(reverse("index"))   
         else:
             # If the form is invalid, re-render the page with existing information.
-            return HttpResponse("Sth wrong!")
             render(request,"auctions/create.html", {
                 'form': form,
                 "categories": categories
@@ -277,6 +278,7 @@ def watchlist(request):
         "message": message
     })
 
+'''
 @login_required(login_url='/login') #redirect to login page if user does not log-in yet
 def bid(request):
     current_user = request.user
@@ -333,4 +335,4 @@ def bid(request):
             "categories": categories
             
         })
-     
+'''     
